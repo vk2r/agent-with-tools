@@ -1,15 +1,7 @@
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { Agent } from "@mastra/core/agent";
 import { LibSQLStore } from "@mastra/libsql";
 import { Memory } from "@mastra/memory";
 import { weatherTool } from "../tools/weather-tool";
-
-const name = process.env.OLLAMA_MODEL ?? '';
-
-const model = createOpenAICompatible({
-  baseURL: "http://localhost:11434/api",
-  name: "Ollama",
-}).chatModel(name);
 
 export const weatherAgent = new Agent({
   name: "Weather Agent",
@@ -27,7 +19,11 @@ export const weatherAgent = new Agent({
 
       Use the weatherTool to fetch current weather data.
 `,
-  model,
+  model: {
+    url: "http://localhost:11434/api",
+    providerId: 'openai',
+    modelId: process.env.OLLAMA_MODEL ?? '',
+  },
   tools: { weatherTool },
   memory: new Memory({
     storage: new LibSQLStore({
