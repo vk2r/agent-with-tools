@@ -1,9 +1,8 @@
-
-import { Mastra } from '@mastra/core/mastra';
-import { LibSQLStore } from '@mastra/libsql';
-import { PinoLogger } from '@mastra/loggers';
-import { weatherAgent } from './agents/weather-agent';
-import { weatherWorkflow } from './workflows/weather-workflow';
+import { Mastra } from "@mastra/core/mastra";
+import { LibSQLStore } from "@mastra/libsql";
+import { PinoLogger } from "@mastra/loggers";
+import { weatherAgent } from "./agents/weather-agent";
+import { weatherWorkflow } from "./workflows/weather-workflow";
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow },
@@ -13,8 +12,8 @@ export const mastra = new Mastra({
     url: ":memory:",
   }),
   logger: new PinoLogger({
-    name: 'Mastra',
-    level: 'info',
+    name: "Mastra",
+    level: "info",
   }),
   telemetry: {
     // Telemetry is deprecated and will be removed in the Nov 4th release

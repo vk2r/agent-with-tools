@@ -21,8 +21,8 @@ export const weatherAgent = new Agent({
 `,
   model: {
     url: "http://localhost:11434/api",
-    providerId: 'openai',
-    modelId: process.env.OLLAMA_MODEL ?? '',
+    providerId: "openai",
+    modelId: process.env.OLLAMA_MODEL ?? "",
   },
   tools: { weatherTool },
   memory: new Memory({
