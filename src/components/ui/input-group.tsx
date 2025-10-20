@@ -67,6 +67,8 @@ function InputGroupAddon({
       data-slot="input-group-addon"
       data-align={align}
       className={cn(inputGroupAddonVariants({ align }), className)}
+      tabIndex={0}
+      onKeyDown={(e) => e.preventDefault()}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest("button")) {
           return;
