@@ -1,26 +1,24 @@
 import { Mastra } from "@mastra/core/mastra";
 import { LibSQLStore } from "@mastra/libsql";
 import { PinoLogger } from "@mastra/loggers";
-import { weatherAgent } from "./agents/weather-agent";
-import { weatherWorkflow } from "./workflows/weather-workflow";
+
+// Agents
+import { financeCloudAgent } from "./agents/finance-cloud-agent";
+import { financeLocalAgent } from "./agents/finance-local-agent";
 
 export const mastra = new Mastra({
-  workflows: { weatherWorkflow },
-  agents: { weatherAgent },
+  agents: { financeCloudAgent, financeLocalAgent },
   storage: new LibSQLStore({
-    // stores observability, scores, ... into memory storage, if it needs to persist, change to file:../mastra.db
-    url: ":memory:",
+    url: "file:./mastra.db",
   }),
   logger: new PinoLogger({
     name: "Mastra",
     level: "info",
   }),
   telemetry: {
-    // Telemetry is deprecated and will be removed in the Nov 4th release
     enabled: false,
   },
   observability: {
-    // Enables DefaultExporter and CloudExporter for AI tracing
-    default: { enabled: true },
+    default: { enabled: false },
   },
 });
