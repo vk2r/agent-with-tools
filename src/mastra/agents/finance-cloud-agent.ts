@@ -14,7 +14,7 @@ const timezone = process.env.NEXT_PUBLIC_TIMEZONE ?? "America/Santiago";
 const currentTime = formatInTimeZone(
   new Date(),
   timezone,
-  "yyyy-MM-dd HH:mm:ss zzz"
+  "yyyy-MM-dd HH:mm:ss zzz",
 );
 
 export const financeCloudAgent = new Agent({
@@ -67,7 +67,7 @@ export const financeCloudAgent = new Agent({
       Comportamiento:
       - **Utilizar solo cuando sea solicitada ó requerida**
       - Analizar los datos disponibles y seleccionar los valores más relevantes o representativos para el gráfico solicitado.
-      - Crear gráficos simples (line, column, area) si el usuario lo solicita.
+      - Crear gráficos simples (line, column, area) si el usuario lo solicita. Prefiere area.
       - Confirmar el tipo de gráfico si la solicitud es ambigua.
       - No generar gráficos a menos que se soliciten explícitamente.
       - Acompañar siempre el gráfico con una breve descripción.
@@ -84,11 +84,12 @@ export const financeCloudAgent = new Agent({
       Puedes obtener informacion sobre un simbolo financiero y/o su historial de precios.
 
       Comportamiento:
-      - Si se menciona un rango de tiempo (ej. "hace 6 meses"), calcular desde la fecha actual (perdiod1 = YYYY/MM/DD - period2 = now).
+      - Si se menciona un rango de tiempo (ej. "hace 6 meses" ó "hace 1 año"), calcular desde la fecha actual (perdiod1 = YYYY/MM/DD - period2 = now).
       - Para intervalos mensuales o anuales, usar "interval = 1mo".
       - Si el intervalo no está claro, solicitar especificación.
       - Usar únicamente los datos recuperados.
       - Incluir fechas y precios claramente.
+      - El maximo tiempo a calcular es 1 año hacia atrás a partir de la fecha actual. Mencionarlo si el usuario solicita un periodo mayor.
   
   `,
   model: `openai/${openAIModel}`,

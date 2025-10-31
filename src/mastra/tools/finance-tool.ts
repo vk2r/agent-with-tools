@@ -7,7 +7,7 @@ type Tools = {
 };
 
 const getToolsFromOS = (tool: string) => {
-  if (os?.toLocaleLowerCase().includes("windows")) {
+  if (os?.toLowerCase().includes("windows")) {
     const tools: Tools = {
       yahoo: {
         command: "cmd",

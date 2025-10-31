@@ -8,20 +8,19 @@ import { formatInTimeZone } from "date-fns-tz";
 import { financeTools } from "../tools/finance-tool";
 
 // Environments
-const ollamaModel = process.env.OLLAMA_MODEL ?? "";
-const ollamaEndpoint = process.env.OLLAMA_ENDPOINT ?? "http://localhost:11434";
+const model = process.env.OLLAMA_MODEL ?? "";
+const context = Number(process.env.OLLAMA_CONTEXT_WINDOW ?? 65536);
+const baseURL = process.env.OLLAMA_ENDPOINT ?? "http://localhost:11434";
 
 // Constants
 const timezone = process.env.TIMEZONE ?? "America/Santiago";
 const currentTime = formatInTimeZone(
   new Date(),
   timezone,
-  "yyyy-MM-dd HH:mm:ss zzz"
+  "yyyy-MM-dd HH:mm:ss zzz",
 );
 
-const ollama = createOllama({
-  baseURL: ollamaEndpoint,
-});
+const ollama = createOllama({ baseURL });
 
 export const financeLocalAgent = new Agent({
   id: "finance-local-agent",
@@ -40,7 +39,6 @@ export const financeLocalAgent = new Agent({
       - **No fabriques ni simules información**.
       - **Utiliza solo la información proporcionada por las herramientas disponibles**.
       - **Nunca des información que ya has dado**.
-      - **Nunca utilices mas de 3 herramientas al mismo tiempo**.
       - **Responde siempre en el idioma en que el usuario ha escrito**, a menos que se solicite explícitamente cambiarlo.
       - **No termines las solicitudes con preguntas**.
       - Si una consulta no es clara, pide al usuario que la aclare.
@@ -74,7 +72,7 @@ export const financeLocalAgent = new Agent({
       Comportamiento:
       - **Utilizar solo cuando sea solicitada ó requerida**
       - Analizar los datos disponibles y seleccionar los valores más relevantes o representativos para el gráfico solicitado.
-      - Crear gráficos simples (line, column, area) si el usuario lo solicita.
+      - Crear gráficos simples (line, column, area) si el usuario lo solicita. Prefiere area.
       - Confirmar el tipo de gráfico si la solicitud es ambigua.
       - No generar gráficos a menos que se soliciten explícitamente.
       - Acompañar siempre el gráfico con una breve descripción.
@@ -91,15 +89,19 @@ export const financeLocalAgent = new Agent({
       Puedes obtener informacion sobre un simbolo financiero y/o su historial de precios.
 
       Comportamiento:
-      - No usar herramientas para graficos.
-      - Si se menciona un rango de tiempo (ej. "hace 6 meses"), calcular desde la fecha actual (perdiod1 = YYYY/MM/DD - period2 = now).
+      - Si se menciona un rango de tiempo (ej. "hace 6 meses" ó "hace 1 año"), calcular desde la fecha actual (perdiod1 = YYYY/MM/DD - period2 = now).
       - Para intervalos mensuales o anuales, usar "interval = 1mo".
       - Si el intervalo no está claro, solicitar especificación.
       - Usar únicamente los datos recuperados.
       - Incluir fechas y precios claramente.
+      - El maximo tiempo a calcular es 1 año hacia atrás a partir de la fecha actual. Mencionarlo si el usuario solicita un periodo mayor.
   
   `,
-  model: ollama(ollamaModel),
+  model: ollama(model, {
+    options: {
+      num_ctx: context,
+    },
+  }),
   tools: await financeTools.getTools(),
   memory: new Memory({
     storage: new LibSQLStore({

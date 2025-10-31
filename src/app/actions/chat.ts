@@ -1,24 +1,27 @@
 "use server";
 
-import type { MastraMessageV2 } from "@mastra/core";
-import { mastra } from "../../mastra";
+import { nanoid } from "nanoid";
+import { addThread } from "@/lib/threads";
 
-export async function getMemory(
-  formData: FormData
-): Promise<MastraMessageV2[]> {
-  // Form
-  const provider = formData.get("provider")?.toString() as "OpenAI" | "Ollama";
+// Definitions
+export type GetChatProps = {
+  threadId: string;
+  provider: "OpenAI" | "Ollama";
+};
 
-  const selected =
-    provider === "OpenAI" ? "financeCloudAgent" : "financeLocalAgent";
-  const agent = mastra.getAgent(selected);
-
-  const memory = await agent.getMemory();
-  if (!memory) return [];
-
-  const { messagesV2 } = await memory.query({
-    threadId: "user-123",
+export async function createThread({
+  message,
+  provider,
+}: {
+  message: string;
+  provider: "OpenAI" | "Ollama";
+}): Promise<string> {
+  const id = nanoid();
+  await addThread({
+    id,
+    title: message,
+    firstMessage: true,
+    providerId: provider,
   });
-
-  return messagesV2;
+  return id;
 }
