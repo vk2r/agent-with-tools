@@ -7,8 +7,8 @@
   color: #1f2328;
   background-color: #ffffff;
   font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji";
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
@@ -126,7 +126,7 @@
   overflow: hidden;
   background: transparent;
   border-bottom: 1px solid #d1d9e0b3;
-  height: 0.25em;
+  height: 0.8px;
   padding: 0;
   margin: 1.5rem 0;
   background-color: #d1d9e0;
@@ -277,6 +277,8 @@
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
   font-weight: 600;
   line-height: 1.25;
 }
@@ -431,6 +433,7 @@
 
 .markdown-body p,
 .markdown-body blockquote,
+.markdown-body ul,
 .markdown-body ol,
 .markdown-body dl,
 .markdown-body table,
@@ -1041,7 +1044,9 @@
 }
 
 .markdown-body .contains-task-list:hover .task-list-item-convert-container,
-.markdown-body .contains-task-list:focus-within .task-list-item-convert-container {
+.markdown-body
+  .contains-task-list:focus-within
+  .task-list-item-convert-container {
   display: block;
   width: auto;
   height: 24px;
@@ -1114,103 +1119,11 @@
 .markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title {
   color: #d1242f;
 }
+
 .markdown-body > *:first-child > .heading-element:first-child {
   margin-top: 0 !important;
 }
 
 .markdown-body .highlight pre:has(+ .zeroclipboard-container) {
   min-height: 52px;
-}
-
-/* =============================================
-   Theme-aware overrides (Tailwind v4 tokens)
-   This section adapts the base Markdown styles
-   to the design tokens defined in src/app/globals.css
-   without disrupting existing defaults.
-   ============================================= */
-
-/* Map global tokens to local variables for markdown */
-.markdown-body {
-  /* Fallbacks provided to keep behavior sane if tokens are missing */
-  --md-fg: var(--foreground, #1f2328);
-  --md-bg: var(--background, #ffffff);
-  --md-border: var(--border, #d1d9e0);
-  --md-muted: var(--muted, #f6f8fa);
-  --md-muted-fg: var(--muted-foreground, #59636e);
-  --md-link: var(--primary, #0969da);
-  /* code block inline background derived from muted/bg */
-  --md-code-bg: color-mix(in oklab, var(--md-muted) 85%, var(--md-bg));
-  --md-code-fg: var(--md-fg);
-}
-
-.markdown-body {
-  color: var(--md-fg);
-  background-color: var(--md-bg);
-}
-
-.markdown-body a {
-  color: var(--md-link);
-}
-
-.markdown-body hr {
-  background-color: var(--md-border);
-  border: 0;
-  border-bottom: 1px solid color-mix(in oklab, var(--md-border) 70%, transparent);
-}
-
-.markdown-body h1,
-.markdown-body h2 {
-  border-bottom-color: color-mix(in oklab, var(--md-border) 70%, transparent);
-}
-
-.markdown-body blockquote {
-  color: var(--md-muted-fg);
-  border-left-color: var(--md-border);
-}
-
-.markdown-body code,
-.markdown-body tt {
-  background-color: var(--md-code-bg);
-  color: var(--md-code-fg);
-}
-
-.markdown-body .highlight pre,
-.markdown-body pre {
-  background-color: var(--md-muted);
-  color: var(--md-fg);
-}
-
-.markdown-body table tr {
-  background-color: var(--md-bg);
-  border-top-color: color-mix(in oklab, var(--md-border) 70%, transparent);
-}
-
-.markdown-body table tr:nth-child(2n) {
-  background-color: var(--md-muted);
-}
-
-.markdown-body table th,
-.markdown-body table td {
-  border-color: var(--md-border);
-}
-
-.markdown-body kbd {
-  color: var(--md-fg);
-  background-color: var(--md-muted);
-  border-color: color-mix(in oklab, var(--md-border) 70%, transparent);
-  box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--md-border) 70%, transparent);
-}
-
-/* If you wrap ReactMarkdown with `prose`, keep full width and blend styles */
-.prose.markdown-body,
-.markdown-body.prose {
-  max-width: 100%;
-}
-
-/* Respect system dark mode (basic). If you add dark tokens later,
-   these can be removed in favor of token-driven theming. */
-@media (prefers-color-scheme: dark) {
-  .markdown-body {
-    color-scheme: dark;
-  }
 }
