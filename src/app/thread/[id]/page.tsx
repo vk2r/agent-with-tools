@@ -2,7 +2,17 @@
 
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
+
+// Components
+import AppSidebar from "@/components/organisms/AppSidebar";
 import ThreadChatContainer from "@/components/organisms/ThreadChatContainer";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+// Libs
 import { getThread } from "@/lib/threads";
 
 // Definitions
@@ -19,17 +29,19 @@ export default async function Page({ params }: Props) {
   if (!thread) notFound();
 
   return (
-    <ViewTransition>
-      <div className="p-6 space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold">{thread.title}</h1>
-          <p className="text-gray-500">ID: {id}</p>
-        </div>
-
-        <div className="w-full flex justify-center">
+    <SidebarProvider
+      className="bg-slate-100"
+      style={{ "--sidebar-width": "19rem" } as React.CSSProperties}
+    >
+      <AppSidebar id={thread.id} />
+      <SidebarInset className="bg-slate-100">
+        <header className="block md:hidden flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-100 sticky top-0">
+          <SidebarTrigger className="-ml-1" />
+        </header>
+        <div className="min-h-screen flex flex-col items-center justify-center relative mb-6 bg-slate-100">
           {thread && <ThreadChatContainer thread={thread} />}
         </div>
-      </div>
-    </ViewTransition>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
