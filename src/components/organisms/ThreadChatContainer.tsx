@@ -1,7 +1,7 @@
 "use client";
 
 import type { CoreMessage } from "@mastra/core";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Definitions
 import type { SubmitValues } from "@/components/organisms/ThreadChat";
@@ -26,6 +26,8 @@ export default function ThreadChatContainer(props: Props) {
   const [error, setError] = useState<string | null>(null);
   const [currentMessage, setCurrentMessage] = useState("");
   const [memory, setMemory] = useState([] as CoreMessage[]);
+
+  const abortRef = useRef<AbortController | null>(null);
 
   // Methods
   const getMemory = async (values: {
@@ -58,10 +60,13 @@ export default function ThreadChatContainer(props: Props) {
     threadId: string;
     firstMessage: boolean;
   }) => {
+    let wasAborted = false;
     try {
       setStream("");
       setIsStreaming(true);
       setCurrentMessage(values.message);
+
+      abortRef.current = new AbortController();
 
       const agent = await fetch("/api/chat/create", {
         method: "POST",
@@ -71,6 +76,7 @@ export default function ThreadChatContainer(props: Props) {
           providerId: values.provider,
           message: values.message,
         }),
+        signal: abortRef.current.signal,
       });
 
       if (!agent.ok) throw new Error(`HTTP ${agent.status}`);
@@ -100,18 +106,31 @@ export default function ThreadChatContainer(props: Props) {
           setStream((prev) => prev + decoder.decode(value, { stream: true }));
         }
       }
-    } catch (error) {
-      console.error(error);
-      setError("Error al procesar el stream");
+    } catch (err: unknown) {
+      let name: string | undefined;
+      if (typeof err === "object" && err && "name" in err) {
+        name = String((err as Record<string, unknown>).name);
+      }
+      if (name === "AbortError") {
+        wasAborted = true;
+      } else {
+        console.error(err);
+        setError("Error al procesar el stream");
+      }
     } finally {
       setCurrentMessage("");
       setIsStreaming(false);
-
-      await getMemory({
-        threadId: values.threadId,
-        providerId: values.provider,
-      });
+      if (!wasAborted) {
+        await getMemory({
+          threadId: values.threadId,
+          providerId: values.provider,
+        });
+      }
     }
+  };
+
+  const stopStreaming = () => {
+    if (abortRef.current) abortRef.current.abort();
   };
 
   useEffect(() => {
@@ -151,6 +170,7 @@ export default function ThreadChatContainer(props: Props) {
       error={error}
       isStreaming={isStreaming}
       isChatDisabled={isStreaming}
+      onStop={stopStreaming}
       onSubmit={async (values: SubmitValues) => {
         await onSubmit({
           message: values.message,

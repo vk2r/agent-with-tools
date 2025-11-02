@@ -1,7 +1,7 @@
 "use client";
 
 import type { CoreMessage } from "@mastra/core";
-
+import { useEffect, useRef } from "react";
 // Components
 import ChatForm from "@/components/molecules/ChatForm";
 import Messages from "@/components/organisms/Messages";
@@ -18,6 +18,7 @@ export type Props = {
   isStreaming: boolean;
   defaultProvider: "OpenAI" | "Ollama";
   onSubmit: (values: SubmitValues) => void;
+  onStop?: () => void;
 };
 
 export default function ThreadChat(props: Props) {
@@ -31,10 +32,25 @@ export default function ThreadChat(props: Props) {
     isChatDisabled,
     defaultProvider,
     onSubmit,
+    onStop,
   } = props;
 
+  // Constants
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  const countMemory =
+    memory?.filter((message) => ["assistant", "user"].includes(message.role))
+      ?.length ?? 0;
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [memory, stream]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  });
+
   return (
-    <div className="w-1/3 mx-auto space-y-10 mb-[100px]">
+    <div className="w-full justify-center bg-slate-100">
       {error && (
         <div className="rounded-md border border-red-300 bg-red-50 text-red-700 p-3">
           {error}
@@ -50,10 +66,15 @@ export default function ThreadChat(props: Props) {
 
       <ChatForm
         fixed
-        isDisabled={isChatDisabled}
+        onStop={onStop}
         onSubmit={onSubmit}
+        countMemory={countMemory}
+        isStreaming={isStreaming}
+        isDisabled={isChatDisabled}
         defaultProvider={defaultProvider}
       />
+
+      <div ref={bottomRef} />
     </div>
   );
 }

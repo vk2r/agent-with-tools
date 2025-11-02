@@ -2,7 +2,7 @@
 "use client";
 
 import type { CoreMessage } from "@mastra/core";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment } from "react";
 import ChatMessage from "@/components/molecules/ChatMessage";
 
 type Props = {
@@ -16,15 +16,8 @@ export default function Messages(props: Props) {
   // Props
   const { messages, streamResponse, isStreaming, currentMessage } = props;
 
-  // Constants
-  const bottomRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  });
-
   return (
-    <div className="w-full col-span-6 space-y-10">
+    <div className="w-full mx-auto max-w-[1024px] mx-auto space-y-10">
       {messages?.length > 0 && (
         <div className="space-y-3">
           {messages.map((message, index) => (
@@ -55,8 +48,6 @@ export default function Messages(props: Props) {
           content={streamResponse ?? "Analizando ..."}
         />
       )}
-
-      <div ref={bottomRef} />
     </div>
   );
 }

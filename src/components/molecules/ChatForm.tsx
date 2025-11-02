@@ -1,25 +1,22 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpIcon } from "lucide-react";
-import { useEffect } from "react";
+import { Brain } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+// Icons
+import { BotIcon } from "@/components/animate-ui/icons/bot";
+import { ArrowUpIcon } from "@/components/ui/arrow-up";
 // UI
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import {
   InputGroup,
   InputGroupAddon,
@@ -28,6 +25,14 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Agent from "@/lib/agents";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 
 // Definitions
 type ChatFormValues = {
@@ -41,49 +46,82 @@ type Props = {
   onSubmit: (values: ChatFormValues) => Promise<void> | void;
   onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
   defaultProvider?: "OpenAI" | "Ollama";
+  isStreaming?: boolean;
+  countMemory?: number;
+  onStop?: () => void;
 };
 
 export default function ChatForm(props: Props) {
   // Props
   const {
+    fixed,
     isDisabled,
+    isStreaming,
+    countMemory,
+    onStop,
     onSubmit,
     onProviderChange,
-    fixed,
     defaultProvider = "OpenAI",
   } = props;
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   const formSchema = z.object({
     provider: z.enum(["OpenAI", "Ollama"]),
-    message: z.string(),
+    message: z.string().min(1),
   });
 
   const form = useForm<ChatFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { provider: defaultProvider, message: "" },
-    mode: "onTouched",
+    mode: "onSubmit",
   });
 
   const provider = form.watch("provider");
 
+  // Methods
+  const handleUserKeyPress = (
+    event: React.KeyboardEvent<HTMLTextAreaElement>,
+  ) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      form.handleSubmit(onSubmit)();
+      form.resetField("message");
+    }
+  };
+
+  const calculateCurrentMemory = (current = 0) => {
+    const limit =
+      form.getValues("provider") === "OpenAI"
+        ? Agent.GetMemoryLimit("openai")
+        : Agent.GetMemoryLimit("ollama");
+    return Math.min(current, limit);
+  };
+
+  // Effects
   useEffect(() => {
     onProviderChange?.(provider);
   }, [provider, onProviderChange]);
+
+  useEffect(() => {
+    if (!isDisabled) textAreaRef.current?.focus();
+  }, [isDisabled]);
 
   return (
     <div
       id="chat-form"
       className={
         fixed
-          ? "fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-3xl px-4"
-          : "w-[50%]"
+          ? "px-4 md:px-0 sticky my-0 inset-x-0 bottom-6 mx-auto z-50 max-w-3xl bg-slate-100"
+          : "w-full mx-6 lg:w-2/5 lg:mx-auto bg-slate-100"
       }
     >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(async (values) => {
             try {
-              await onSubmit(values);
+              if (isDisabled) onStop?.();
+              else await onSubmit(values);
             } finally {
               form.setValue("message", "");
             }
@@ -101,16 +139,18 @@ export default function ChatForm(props: Props) {
                     className={`bg-white dark:bg-white  transition-shadow ${fixed ? "shadow-xl" : "hover:shadow-xl"}`}
                   >
                     <InputGroupTextarea
-                      placeholder="Ask, Search or Chat..."
+                      placeholder="Pregunta sobre finanzas ..."
                       disabled={isDisabled}
+                      onKeyUp={handleUserKeyPress}
                       {...field}
+                      ref={textAreaRef}
                     />
                     <InputGroupAddon align="block-end">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <InputGroupButton
                             variant="ghost"
-                            disabled={isDisabled}
+                            className="cursor-pointer"
                           >
                             {form.getValues("provider")}
                           </InputGroupButton>
@@ -120,7 +160,9 @@ export default function ChatForm(props: Props) {
                           align="start"
                           className="[--radius:0.95rem]"
                         >
+                          <DropdownMenuLabel>Proveedor</DropdownMenuLabel>
                           <DropdownMenuItem
+                            className="cursor-pointer"
                             onClick={() => {
                               form.setValue("provider", "OpenAI", {
                                 shouldDirty: true,
@@ -133,6 +175,7 @@ export default function ChatForm(props: Props) {
                             OpenAI
                           </DropdownMenuItem>
                           <DropdownMenuItem
+                            className="cursor-pointer"
                             onClick={() => {
                               form.setValue("provider", "Ollama", {
                                 shouldDirty: true,
@@ -147,23 +190,53 @@ export default function ChatForm(props: Props) {
                         </DropdownMenuContent>
                       </DropdownMenu>
                       <InputGroupText className="ml-auto">
-                        52% used
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="secondary">
+                              <div className="flex items-center justify-center gap-2">
+                                {calculateCurrentMemory(countMemory)} /{" "}
+                                {form.getValues("provider") === "OpenAI"
+                                  ? Agent.GetMemoryLimit("openai")
+                                  : Agent.GetMemoryLimit("ollama")}
+                                <Brain size={14} />
+                              </div>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              Finantier recordará los ultimos{" "}
+                              {calculateCurrentMemory(countMemory)} mensajes
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
                       </InputGroupText>
                       <Separator orientation="vertical" className="!h-4" />
-                      <InputGroupButton
-                        variant="default"
-                        className="rounded-full"
-                        size="icon-xs"
-                        type="submit"
-                        disabled={isDisabled}
-                      >
-                        <ArrowUpIcon />
-                        <span className="sr-only">Enviar</span>
-                      </InputGroupButton>
+                      {isStreaming && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="cursor-pointer"
+                          onClick={onStop}
+                        >
+                          <BotIcon animate loop />
+                          Parar
+                        </Button>
+                      )}
+                      {!isStreaming && (
+                        <InputGroupButton
+                          variant="default"
+                          className="rounded-full cursor-pointer"
+                          size="icon-xs"
+                          disabled={isDisabled}
+                          type="submit"
+                        >
+                          <ArrowUpIcon />
+                          <span className="sr-only">Enviar</span>
+                        </InputGroupButton>
+                      )}
                     </InputGroupAddon>
                   </InputGroup>
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
