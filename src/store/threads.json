@@ -1,16 +1,3 @@
 {
-  "threads": [
-    {
-      "id": "ecsEcPE_ONMY2v9QjtZUf",
-      "title": "Dame un historico de los precios de AMD\n",
-      "firstMessage": false,
-      "providerId": "OpenAI"
-    },
-    {
-      "id": "9rbAch-5RLYTpmFC1KRJT",
-      "title": "Dame un historico de los precios de AMD",
-      "firstMessage": false,
-      "providerId": "Ollama"
-    }
-  ]
+  "threads": []
 }
