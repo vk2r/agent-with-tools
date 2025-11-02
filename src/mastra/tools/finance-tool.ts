@@ -26,6 +26,13 @@ const getToolsFromOS = (tool: string) => {
           generate_word_cloud_chart,generate_funnel_chart`,
         },
       },
+      duckduckGo: {
+        command: "ddg-search-mcp",
+      },
+      calculator: {
+        command: "cmd",
+        args: ["/c", "npx", "-y", "@wrtnlabs/calculator-mcp@latest"],
+      },
     };
     return tools[tool];
   } else {
@@ -47,6 +54,13 @@ const getToolsFromOS = (tool: string) => {
           generate_word_cloud_chart,generate_funnel_chart`,
         },
       },
+      duckduckGo: {
+        command: "ddg-search-mcp",
+      },
+      calculator: {
+        command: "npx",
+        args: ["-y", "@wrtnlabs/calculator-mcp@latest"],
+      },
     };
     return tools[tool];
   }
@@ -60,6 +74,9 @@ export const financeTools = new MCPClient({
     },
     antvCharts: {
       ...getToolsFromOS("antvCharts"),
+    },
+    duckduckGo: {
+      ...getToolsFromOS("duckduckGo"),
     },
   },
 });
