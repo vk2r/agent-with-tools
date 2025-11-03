@@ -40,7 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Mastar
+# mastra
 mastra.db*
 agent.db*
 /src/store/threads.json
