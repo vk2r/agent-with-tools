@@ -105,7 +105,7 @@ Se tiene acceso a la siguiente lista de herramientas en formato MCP:
 
 Los mensajes seran almacenados en los siguientes archivos:
 - `src/store/threads.json`: Almacena los hilos de chat
-- `mastra.db*`: Almacena la configuracion del agente, mensajes de chats y su memoria
+- `mastra.db*`: Almacena la configuracion del agente, mensajes de chats y su memoria. Esta será generada automaticamente la 1era vez que se inicie el agente.
 
 Esto facilita respaldos y depuración. No se usa ninguna base de datos externa por defecto.
 
