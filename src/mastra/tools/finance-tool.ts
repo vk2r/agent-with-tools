@@ -29,10 +29,6 @@ const getToolsFromOS = (tool: string) => {
       duckduckGo: {
         command: "ddg-search-mcp",
       },
-      calculator: {
-        command: "cmd",
-        args: ["/c", "npx", "-y", "@wrtnlabs/calculator-mcp@latest"],
-      },
     };
     return tools[tool];
   } else {
@@ -56,10 +52,6 @@ const getToolsFromOS = (tool: string) => {
       },
       duckduckGo: {
         command: "ddg-search-mcp",
-      },
-      calculator: {
-        command: "npx",
-        args: ["-y", "@wrtnlabs/calculator-mcp@latest"],
       },
     };
     return tools[tool];
