@@ -9,7 +9,7 @@ Agente financiero con almacenamiento de chats y uso de memoria, junto con el uso
 - Noticias financieras
 - Recomendaciones de acciones
 
-### Requisitos
+## Requisitos
 
 - Node.js LTS (recomendado; 22+ mínimo)
 - Cuenta y clave de API de OpenAI si usas el proveedor `openai` (recomendado por defecto).
@@ -127,7 +127,7 @@ Se han probado los siguientes modelos locales:
 > - Las respuestas del agente pueden variar entre ejecuciones, versiones de modelos o parámetros.
 > - Las respuestas de cualquier modelo (Cloud o Local) no son 100% precisas. Se recomienda verificar la informacion.
 
-### Licencia
+## Licencia
 Este proyecto está licenciado bajo [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).  
 © 2025 Go Studios®. Todos los derechos reservados.  
 Consulta el archivo [LICENSE](./LICENSE) para más detalles.
