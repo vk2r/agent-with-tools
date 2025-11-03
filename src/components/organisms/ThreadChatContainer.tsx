@@ -12,6 +12,9 @@ import ThreadChat from "@/components/organisms/ThreadChat";
 // Types
 import type { Thread } from "@/lib/threads";
 
+// Icons
+import { ChartLine } from "../animate-ui/icons/chart-line";
+
 interface Props {
   thread: Thread;
   onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
@@ -104,7 +107,9 @@ export default function ThreadChatContainer(props: Props) {
         const { value, done } = await reader.read();
         if (done) break;
         if (value) {
-          setStream((prev) => prev + decoder.decode(value, { stream: true }));
+          setStream(
+            (prev: string) => prev + decoder.decode(value, { stream: true }),
+          );
         }
       }
     } catch (err: unknown) {
@@ -164,24 +169,31 @@ export default function ThreadChatContainer(props: Props) {
   }, [thread.id]);
 
   return (
-    <ThreadChat
-      message={currentMessage}
-      memory={memory}
-      stream={stream}
-      error={error}
-      isStreaming={isStreaming}
-      isChatDisabled={isStreaming}
-      onStop={stopStreaming}
-      onProviderChange={onProviderChange}
-      defaultProvider={thread.providerId}
-      onSubmit={async (values: SubmitValues) => {
-        await onSubmit({
-          message: values.message,
-          provider: values.provider,
-          threadId: thread.id,
-          firstMessage: false,
-        });
-      }}
-    />
+    <>
+      {!thread.firstMessage && memory.length === 0 && !isStreaming && (
+        <ChartLine animate loop size={100} />
+      )}
+      {(memory.length > 0 || isStreaming) && (
+        <ThreadChat
+          message={currentMessage}
+          memory={memory}
+          stream={stream}
+          error={error}
+          isStreaming={isStreaming}
+          isChatDisabled={isStreaming}
+          onStop={stopStreaming}
+          onProviderChange={onProviderChange}
+          defaultProvider={thread.providerId}
+          onSubmit={async (values: SubmitValues) => {
+            await onSubmit({
+              message: values.message,
+              provider: values.provider,
+              threadId: thread.id,
+              firstMessage: false,
+            });
+          }}
+        />
+      )}
+    </>
   );
 }

@@ -1127,3 +1127,7 @@
 .markdown-body .highlight pre:has(+ .zeroclipboard-container) {
   min-height: 52px;
 }
+
+.markdown-body ul {
+  list-style-type: initial;
+}

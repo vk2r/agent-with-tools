@@ -48,6 +48,13 @@ export default function Messages(props: Props) {
           content={streamResponse ?? "Analizando ..."}
         />
       )}
+
+      {messages?.length > 0 && !isStreaming && (
+        <div className="w-full text-center text-xs text-gray-500 -mt-6 mb-6 px-6">
+          Finantier no es perfecto y puede cometer errores. Considera verificar
+          la información importante.
+        </div>
+      )}
     </div>
   );
 }

@@ -1,15 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Brain, Pause, Loader } from "lucide-react";
+import { cx } from "class-variance-authority";
+import { Brain, Loader, Pause } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 // Icons
 import { BotIcon } from "@/components/animate-ui/icons/bot";
 import { ArrowUpIcon } from "@/components/ui/arrow-up";
-
 // UI
 import {
   DropdownMenu,
@@ -33,11 +32,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Agent from "@/lib/agents";
-
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-
-import { cx } from "class-variance-authority";
 
 // Definitions
 export type OnSubmitProps = {
@@ -233,8 +229,8 @@ export default function ChatForm(props: Props) {
                           </TooltipTrigger>
                           <TooltipContent side="top">
                             <p>
-                              Finantier esta consultando a sus multiples fuentes
-                              para desarrollar una mejor respuesta
+                              Finantier esta consultando multiples fuentes para
+                              desarrollar una mejor respuesta
                             </p>
                           </TooltipContent>
                         </Tooltip>

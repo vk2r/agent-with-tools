@@ -2,6 +2,7 @@
 
 import type { CoreMessage } from "@mastra/core";
 import { useEffect, useRef } from "react";
+
 // Components
 import ChatForm from "@/components/molecules/ChatForm";
 import Messages from "@/components/organisms/Messages";
@@ -40,8 +41,9 @@ export default function ThreadChat(props: Props) {
   // Constants
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const countMemory =
-    memory?.filter((message) => ["assistant", "user"].includes(message.role))
-      ?.length ?? 0;
+    memory
+      ?.filter((message) => ["assistant", "user"].includes(message.role))
+      ?.filter((message) => typeof message.content === "string")?.length ?? 0;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
