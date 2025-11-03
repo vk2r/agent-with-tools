@@ -33,7 +33,7 @@ const getToolsFromOS = (tool: string) => {
     return tools[tool];
   } else {
     const tools: Tools = {
-      yahooFinance: {
+      yahoo: {
         command: "npx",
         args: ["-y", "yahoo-finance-mcp"],
       },
