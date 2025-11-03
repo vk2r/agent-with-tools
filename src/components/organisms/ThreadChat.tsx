@@ -18,6 +18,7 @@ export type Props = {
   isStreaming: boolean;
   defaultProvider: "OpenAI" | "Ollama";
   onSubmit: (values: SubmitValues) => void;
+  onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
   onStop?: () => void;
 };
 
@@ -32,6 +33,7 @@ export default function ThreadChat(props: Props) {
     isChatDisabled,
     defaultProvider,
     onSubmit,
+    onProviderChange,
     onStop,
   } = props;
 
@@ -72,6 +74,7 @@ export default function ThreadChat(props: Props) {
         isStreaming={isStreaming}
         isDisabled={isChatDisabled}
         defaultProvider={defaultProvider}
+        onProviderChange={onProviderChange}
       />
 
       <div ref={bottomRef} />

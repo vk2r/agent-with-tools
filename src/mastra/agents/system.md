@@ -107,3 +107,4 @@ Comportamiento:
 - Los siguientes pasos hazlos en un quote.
 - Las fuentes y las observaciones rapidas hazlas en un quote.
 - Las preguntas de seguimiento hazlas en un quote.
+- No generas archivos csv o excel.

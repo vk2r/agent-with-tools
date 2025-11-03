@@ -2,6 +2,7 @@
 import { Landmark } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, ViewTransition } from "react";
+import { nanoid } from "nanoid";
 
 // Api
 import { createThread } from "@/app/actions/chat";
@@ -14,19 +15,51 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
-// Definitions
-type Question = {
-  id: string;
-  title: string;
-};
+import {
+  type Notification,
+  NotificationList,
+} from "@/components/animate-ui/components/community/notification-list";
 
 export default function Page() {
   // Hooks
   const router = useRouter();
 
+  // Constants
+  const defaultProvider = "OpenAI";
+  const notifications: Notification[] = [
+    {
+      id: nanoid(),
+      title: "Precios en tiempo real",
+      subtitle: "Busca el precio de las acciones de Apple",
+    },
+    {
+      id: nanoid(),
+      title: "Generación de gráficos",
+      subtitle:
+        "Obtén un historial de precios de los últimos 12 meses de Microsoft y grafícalos linealmente",
+    },
+    {
+      id: nanoid(),
+      title: "Búsqueda en internet",
+      subtitle: "Busca papers sobre finanzas en internet",
+    },
+    {
+      id: nanoid(),
+      title: "Noticias financieras",
+      subtitle: "Obtén las últimas noticias sobre NVIDIA",
+    },
+    {
+      id: nanoid(),
+      title: "Recomendaciones de acciones",
+      subtitle: "Recomienda acciones para invertir en el mercado de valores",
+    },
+  ];
+
   // State
   const [isDisabled, setIsDisabled] = useState(false);
+  const [provider, setProvider] = useState<"OpenAI" | "Ollama">(
+    defaultProvider,
+  );
 
   // Methods
   async function onSubmit(values: {
@@ -38,8 +71,6 @@ export default function Page() {
     router.push(`/thread/${id}`);
   }
 
-  const questions: Question[] = [];
-
   return (
     <ViewTransition>
       <SidebarProvider
@@ -47,7 +78,7 @@ export default function Page() {
         style={{ "--sidebar-width": "19rem" } as React.CSSProperties}
       >
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="bg-slate-100">
           <header className="block md:hidden flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-100">
             <SidebarTrigger className="-ml-1 sticky top-0" />
           </header>
@@ -62,9 +93,16 @@ export default function Page() {
             </p>
 
             <ChatForm
-              isDisabled={isDisabled}
               onSubmit={onSubmit}
-              defaultProvider="OpenAI"
+              isDisabled={isDisabled}
+              defaultProvider={defaultProvider}
+              onProviderChange={setProvider}
+            />
+
+            <NotificationList
+              className="mt-6"
+              notifications={notifications}
+              onClick={(message) => onSubmit({ provider, message })}
             />
           </div>
         </SidebarInset>

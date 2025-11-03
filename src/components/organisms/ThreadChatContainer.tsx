@@ -14,11 +14,12 @@ import type { Thread } from "@/lib/threads";
 
 interface Props {
   thread: Thread;
+  onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
 }
 
 export default function ThreadChatContainer(props: Props) {
   // Props
-  const { thread } = props;
+  const { thread, onProviderChange } = props;
 
   // States
   const [stream, setStream] = useState("");
@@ -171,6 +172,8 @@ export default function ThreadChatContainer(props: Props) {
       isStreaming={isStreaming}
       isChatDisabled={isStreaming}
       onStop={stopStreaming}
+      onProviderChange={onProviderChange}
+      defaultProvider={thread.providerId}
       onSubmit={async (values: SubmitValues) => {
         await onSubmit({
           message: values.message,
@@ -179,7 +182,6 @@ export default function ThreadChatContainer(props: Props) {
           firstMessage: false,
         });
       }}
-      defaultProvider={thread.providerId}
     />
   );
 }

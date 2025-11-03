@@ -1,13 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Brain } from "lucide-react";
+import { Brain, Pause, Loader } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
 // Icons
 import { BotIcon } from "@/components/animate-ui/icons/bot";
 import { ArrowUpIcon } from "@/components/ui/arrow-up";
+
 // UI
 import {
   DropdownMenu,
@@ -31,19 +33,22 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Agent from "@/lib/agents";
+
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 
+import { cx } from "class-variance-authority";
+
 // Definitions
-type ChatFormValues = {
+export type OnSubmitProps = {
   provider: "OpenAI" | "Ollama";
   message: string;
 };
 
-type Props = {
+export type Props = {
   fixed?: boolean;
   isDisabled: boolean;
-  onSubmit: (values: ChatFormValues) => Promise<void> | void;
+  onSubmit: (values: OnSubmitProps) => Promise<void> | void;
   onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
   defaultProvider?: "OpenAI" | "Ollama";
   isStreaming?: boolean;
@@ -71,13 +76,11 @@ export default function ChatForm(props: Props) {
     message: z.string().min(1),
   });
 
-  const form = useForm<ChatFormValues>({
+  const form = useForm<OnSubmitProps>({
     resolver: zodResolver(formSchema),
     defaultValues: { provider: defaultProvider, message: "" },
     mode: "onSubmit",
   });
-
-  const provider = form.watch("provider");
 
   // Methods
   const handleUserKeyPress = (
@@ -99,10 +102,6 @@ export default function ChatForm(props: Props) {
   };
 
   // Effects
-  useEffect(() => {
-    onProviderChange?.(provider);
-  }, [provider, onProviderChange]);
-
   useEffect(() => {
     if (!isDisabled) textAreaRef.current?.focus();
   }, [isDisabled]);
@@ -136,7 +135,11 @@ export default function ChatForm(props: Props) {
               <FormItem>
                 <FormControl>
                   <InputGroup
-                    className={`bg-white dark:bg-white  transition-shadow ${fixed ? "shadow-xl" : "hover:shadow-xl"}`}
+                    className={cx(
+                      "transition-shadow",
+                      fixed ? "shadow-xl" : "hover:shadow-xl",
+                      isStreaming ? "bg-slate-50" : "bg-white dark:bg-white",
+                    )}
                   >
                     <InputGroupTextarea
                       placeholder="Pregunta sobre finanzas ..."
@@ -145,9 +148,10 @@ export default function ChatForm(props: Props) {
                       {...field}
                       ref={textAreaRef}
                     />
+
                     <InputGroupAddon align="block-end">
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                        <DropdownMenuTrigger disabled={isStreaming} asChild>
                           <InputGroupButton
                             variant="ghost"
                             className="cursor-pointer"
@@ -189,18 +193,21 @@ export default function ChatForm(props: Props) {
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
+
                       <InputGroupText className="ml-auto">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="secondary">
-                              <div className="flex items-center justify-center gap-2">
-                                {calculateCurrentMemory(countMemory)} /{" "}
-                                {form.getValues("provider") === "OpenAI"
-                                  ? Agent.GetMemoryLimit("openai")
-                                  : Agent.GetMemoryLimit("ollama")}
-                                <Brain size={14} />
-                              </div>
-                            </Badge>
+                            {!isStreaming && (
+                              <Badge variant="secondary">
+                                <div className="flex items-center justify-center gap-2">
+                                  {calculateCurrentMemory(countMemory)} /{" "}
+                                  {form.getValues("provider") === "OpenAI"
+                                    ? Agent.GetMemoryLimit("openai")
+                                    : Agent.GetMemoryLimit("ollama")}
+                                  <Brain size={14} />
+                                </div>
+                              </Badge>
+                            )}
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>
@@ -210,6 +217,19 @@ export default function ChatForm(props: Props) {
                           </TooltipContent>
                         </Tooltip>
                       </InputGroupText>
+
+                      {isStreaming && (
+                        <Badge
+                          variant="default"
+                          className="rounded-sm p-1 px-2"
+                        >
+                          <div className="flex items-center justify-center gap-2">
+                            Desarrollando
+                            <Loader className="animate-spin size-3" />
+                          </div>
+                        </Badge>
+                      )}
+
                       <Separator orientation="vertical" className="!h-4" />
                       {isStreaming && (
                         <Button
@@ -218,7 +238,7 @@ export default function ChatForm(props: Props) {
                           className="cursor-pointer"
                           onClick={onStop}
                         >
-                          <BotIcon animate loop />
+                          <Pause size={15} />
                           Parar
                         </Button>
                       )}
