@@ -112,7 +112,7 @@ Esto facilita respaldos y depuración. No se usa ninguna base de datos externa p
 ### Modelos locales
 
 Se han probado los siguientes modelos locales:
-- "Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL" (recomendado): Buena ejecucion de respuestas y uso de herramientas. Baja alucinacion. Alto costo en VRAM de GPU (15GB aprox).
+- "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL" (recomendado): Buena ejecucion de respuestas y uso de herramientas. Baja alucinacion. Alto costo en VRAM de GPU (15GB aprox).
 - "hf.co/unsloth/granite-4.0-h-tiny-GGUF:Q8_K_XL": Buena ejecucion de respuestas y uso de herramientas. Alucinacion media. Costo medio en VRAM de GPU (11GB aprox).
 
 ### Problemas comunes
