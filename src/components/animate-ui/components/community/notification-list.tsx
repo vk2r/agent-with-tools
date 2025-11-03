@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { MousePointerClick } from "lucide-react";
 
 import { motion, type Transition } from "motion/react";
 import { cn } from "@/lib/utils";
@@ -88,8 +88,8 @@ function NotificationList(props: Props) {
                 className="cursor-pointer"
                 onClick={() => onClick?.(notification.subtitle)}
               >
-                <Search className="size-5" />
-                Preguntar
+                <MousePointerClick className="size-5" />
+                Probar
               </Button>
             </div>
           </motion.div>
@@ -99,14 +99,14 @@ function NotificationList(props: Props) {
       <div className="flex items-center gap-2 w-full">
         <span className="grid w-full">
           <motion.span
-            className="text-sm font-medium text-neutral-600 dark:text-neutral-300 row-start-1 col-start-1 flex flex-row justify-center"
+            className="text-sm font-medium text-md text-neutral-600 dark:text-neutral-300 row-start-1 col-start-1 flex flex-row justify-center"
             variants={notificationTextVariants}
             transition={textSwitchTransition}
           >
-            ¿Qué puedo hacer?
+            ¿ Qué puedo hacer ?
           </motion.span>
           <motion.span
-            className="text-sm font-medium text-neutral-600 dark:text-neutral-300 flex items-center gap-1 cursor-pointer select-none row-start-1 col-start-1 flex flex-row justify-center"
+            className="text-sm font-medium text-md text-neutral-600 dark:text-neutral-300 flex items-center gap-1 cursor-pointer select-none row-start-1 col-start-1 flex flex-row justify-center"
             variants={viewAllTextVariants}
             transition={textSwitchTransition}
           >

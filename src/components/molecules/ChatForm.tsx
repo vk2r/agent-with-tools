@@ -219,15 +219,25 @@ export default function ChatForm(props: Props) {
                       </InputGroupText>
 
                       {isStreaming && (
-                        <Badge
-                          variant="default"
-                          className="rounded-sm p-1 px-2"
-                        >
-                          <div className="flex items-center justify-center gap-2">
-                            Desarrollando
-                            <Loader className="animate-spin size-3" />
-                          </div>
-                        </Badge>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              variant="default"
+                              className="rounded-sm p-1 px-2"
+                            >
+                              <div className="flex items-center justify-center gap-2">
+                                Desarrollando
+                                <Loader className="animate-spin size-3" />
+                              </div>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <p>
+                              Finantier esta consultando a sus multiples fuentes
+                              para desarrollar una mejor respuesta
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
                       )}
 
                       <Separator orientation="vertical" className="!h-4" />
@@ -235,7 +245,7 @@ export default function ChatForm(props: Props) {
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="cursor-pointer"
+                          className="cursor-pointer flex flex-row gap-2 justify-center items-center"
                           onClick={onStop}
                         >
                           <Pause size={15} />

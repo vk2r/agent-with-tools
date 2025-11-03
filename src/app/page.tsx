@@ -29,14 +29,14 @@ export default function Page() {
   const notifications: Notification[] = [
     {
       id: nanoid(),
-      title: "Precios en tiempo real",
-      subtitle: "Busca el precio de las acciones de Apple",
-    },
-    {
-      id: nanoid(),
       title: "Generación de gráficos",
       subtitle:
         "Obtén un historial de precios de los últimos 12 meses de Microsoft y grafícalos linealmente",
+    },
+    {
+      id: nanoid(),
+      title: "Precios en tiempo real",
+      subtitle: "Busca el precio de las acciones de Apple",
     },
     {
       id: nanoid(),
