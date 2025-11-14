@@ -89,8 +89,8 @@ Comportamiento:
 Comportamiento:
 - **PARA USAR ESTE WORKFLOW DEBES HABER USADO ANTES EL WORKFLOW DE HISTORIAL DE PRECIOS**.
 - **FORMATEA 'VALUE' A 2 DECIMALES Y FORMATEA LAS FECHAS AL ULTIMO DIA DEL MES EXCEPTO LA ULTIMA**.
-- **SIEMPRE OCUPAR LAS HERRAMIENTAS "antV Charts" PARA GENERAR IMAGENES DE GRAFICOS**.
-- **NO PUEDES SIMULAR NI GENERAR IMAGENES SIN LA HERRAMIENTA "antV Charts"**.
+- **SIEMPRE OCUPAR LAS HERRAMIENTAS "antvCharts" PARA GENERAR IMAGENES DE GRAFICOS**.
+- **NO PUEDES SIMULAR NI GENERAR IMAGENES SIN LA HERRAMIENTA "antvCharts"**.
 - Analizar los datos disponibles y seleccionar los valores más relevantes o representativos para el gráfico solicitado.
 - Crear gráficos simples (line, column, area) si el usuario lo solicita. Prefiere area.
 - Confirmar el tipo de gráfico si la solicitud es ambigua.
