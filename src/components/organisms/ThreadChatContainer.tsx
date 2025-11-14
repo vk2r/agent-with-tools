@@ -17,7 +17,7 @@ import { ChartLine } from "../animate-ui/icons/chart-line";
 
 interface Props {
   thread: Thread;
-  onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
+  onProviderChange?: (provider: "OpenAI" | "Ollama" | "xAI") => void;
 }
 
 export default function ThreadChatContainer(props: Props) {
@@ -36,7 +36,7 @@ export default function ThreadChatContainer(props: Props) {
   // Methods
   const getMemory = async (values: {
     threadId: string;
-    providerId: "OpenAI" | "Ollama";
+    providerId: "OpenAI" | "Ollama" | "xAI";
   }) => {
     try {
       const messages = await fetch("/api/chat/get", {
@@ -59,7 +59,7 @@ export default function ThreadChatContainer(props: Props) {
   };
 
   const onSubmit = async (values: {
-    provider: "OpenAI" | "Ollama";
+    provider: "OpenAI" | "Ollama" | "xAI";
     message: string;
     threadId: string;
     firstMessage: boolean;

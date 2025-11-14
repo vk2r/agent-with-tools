@@ -3,11 +3,12 @@ import { LibSQLStore } from "@mastra/libsql";
 import { PinoLogger } from "@mastra/loggers";
 
 // Agents
-import { financeCloudAgent } from "./agents/finance-cloud-agent";
 import { financeLocalAgent } from "./agents/finance-local-agent";
+import { financeOpenAIAgent } from "./agents/finance-openai-agent";
+import { financeXAIAgent } from "./agents/finance-xai-agent";
 
 export const mastra = new Mastra({
-  agents: { financeCloudAgent, financeLocalAgent },
+  agents: { financeOpenAIAgent, financeXAIAgent, financeLocalAgent },
   storage: new LibSQLStore({
     url: "file:./mastra.db",
   }),

@@ -8,7 +8,10 @@ import ChatForm from "@/components/molecules/ChatForm";
 import Messages from "@/components/organisms/Messages";
 
 // Definitions
-export type SubmitValues = { provider: "OpenAI" | "Ollama"; message: string };
+export type SubmitValues = {
+  provider: "OpenAI" | "Ollama" | "xAI";
+  message: string;
+};
 
 export type Props = {
   message: string;
@@ -17,9 +20,9 @@ export type Props = {
   error: string | null;
   isChatDisabled: boolean;
   isStreaming: boolean;
-  defaultProvider: "OpenAI" | "Ollama";
+  defaultProvider: "OpenAI" | "Ollama" | "xAI";
   onSubmit: (values: SubmitValues) => void;
-  onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
+  onProviderChange?: (provider: "OpenAI" | "Ollama" | "xAI") => void;
   onStop?: () => void;
 };
 

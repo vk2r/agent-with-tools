@@ -15,7 +15,6 @@ import "@/components/styles/latex.css";
 import { UserIcon } from "@/components/animate-ui/icons/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 
 // Definitions
 export type ChatMessageProps = {

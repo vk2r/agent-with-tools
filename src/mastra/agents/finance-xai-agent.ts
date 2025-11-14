@@ -10,8 +10,8 @@ import { formatInTimeZone } from "date-fns-tz";
 import { financeTools } from "../tools/finance-tool";
 
 // Environments
-const model = process.env.OPENAI_MODEL ?? "";
-const memoryLimt = Number(process.env.OPENAI_MEMORY_LIMIT ?? "20");
+const model = process.env.XAI_MODEL ?? "";
+const memoryLimt = Number(process.env.XAI_MEMORY_LIMIT ?? "10");
 
 // Constants
 const timezone = process.env.NEXT_PUBLIC_TIMEZONE ?? "America/Santiago";
@@ -27,11 +27,11 @@ const rulesInstructions = rulesRaw
   .replaceAll("${currentTime.toString()}", currentTime.toString())
   .replaceAll("${timezone}", timezone);
 
-export const financeCloudAgent = new Agent({
-  id: "finance-cloud-agent",
-  name: "Finance Cloud Agent",
+export const financeXAIAgent = new Agent({
+  id: "finance-xai-agent",
+  name: "Finance xAI Agent",
   instructions: rulesInstructions,
-  model: `openai/${model}`,
+  model: `xai/${model}`,
   tools: await financeTools.getTools(),
   memory: new Memory({
     storage: new LibSQLStore({

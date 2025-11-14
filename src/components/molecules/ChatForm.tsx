@@ -6,9 +6,10 @@ import { Brain, Loader, Pause } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
 // Icons
-import { BotIcon } from "@/components/animate-ui/icons/bot";
 import { ArrowUpIcon } from "@/components/ui/arrow-up";
+
 // UI
 import {
   DropdownMenu,
@@ -37,7 +38,7 @@ import { Button } from "../ui/button";
 
 // Definitions
 export type OnSubmitProps = {
-  provider: "OpenAI" | "Ollama";
+  provider: "OpenAI" | "Ollama" | "xAI";
   message: string;
 };
 
@@ -45,8 +46,8 @@ export type Props = {
   fixed?: boolean;
   isDisabled: boolean;
   onSubmit: (values: OnSubmitProps) => Promise<void> | void;
-  onProviderChange?: (provider: "OpenAI" | "Ollama") => void;
-  defaultProvider?: "OpenAI" | "Ollama";
+  onProviderChange?: (provider: "OpenAI" | "Ollama" | "xAI") => void;
+  defaultProvider?: "OpenAI" | "Ollama" | "xAI";
   isStreaming?: boolean;
   countMemory?: number;
   onStop?: () => void;
@@ -68,7 +69,7 @@ export default function ChatForm(props: Props) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const formSchema = z.object({
-    provider: z.enum(["OpenAI", "Ollama"]),
+    provider: z.enum(["OpenAI", "Ollama", "xAI"]),
     message: z.string().min(1),
   });
 
@@ -90,11 +91,26 @@ export default function ChatForm(props: Props) {
   };
 
   const calculateCurrentMemory = (current = 0) => {
-    const limit =
-      form.getValues("provider") === "OpenAI"
-        ? Agent.GetMemoryLimit("openai")
-        : Agent.GetMemoryLimit("ollama");
-    return Math.min(current, limit);
+    const limit = () => {
+      if (form.getValues("provider") === "OpenAI") {
+        return Agent.GetMemoryLimit("openai");
+      }
+      if (form.getValues("provider") === "Ollama") {
+        return Agent.GetMemoryLimit("ollama");
+      }
+      return Agent.GetMemoryLimit("xai");
+    };
+    return Math.min(current, limit());
+  };
+
+  const calculateMemoryLimit = () => {
+    if (form.getValues("provider") === "OpenAI") {
+      return Agent.GetMemoryLimit("openai");
+    }
+    if (form.getValues("provider") === "Ollama") {
+      return Agent.GetMemoryLimit("ollama");
+    }
+    return Agent.GetMemoryLimit("xai");
   };
 
   // Effects
@@ -177,6 +193,19 @@ export default function ChatForm(props: Props) {
                           <DropdownMenuItem
                             className="cursor-pointer"
                             onClick={() => {
+                              form.setValue("provider", "xAI", {
+                                shouldDirty: true,
+                                shouldValidate: true,
+                                shouldTouch: true,
+                              });
+                              onProviderChange?.("xAI");
+                            }}
+                          >
+                            xAI
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onClick={() => {
                               form.setValue("provider", "Ollama", {
                                 shouldDirty: true,
                                 shouldValidate: true,
@@ -197,9 +226,7 @@ export default function ChatForm(props: Props) {
                               <Badge variant="secondary">
                                 <div className="flex items-center justify-center gap-2">
                                   {calculateCurrentMemory(countMemory)} /{" "}
-                                  {form.getValues("provider") === "OpenAI"
-                                    ? Agent.GetMemoryLimit("openai")
-                                    : Agent.GetMemoryLimit("ollama")}
+                                  {calculateMemoryLimit()}
                                   <Brain size={14} />
                                 </div>
                               </Badge>

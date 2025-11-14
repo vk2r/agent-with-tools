@@ -4,7 +4,11 @@ const agents = {
     context: Number(process.env.OLLAMA_CONTEXT ?? "65536"),
   },
   openai: {
-    memoryLimit: Number(process.env.OPENAI_MEMORY_LIMIT ?? "20"),
+    memoryLimit: Number(process.env.OPENAI_MEMORY_LIMIT ?? "10"),
+    context: Infinity,
+  },
+  xai: {
+    memoryLimit: Number(process.env.XAI_MEMORY_LIMIT ?? "10"),
     context: Infinity,
   },
 };

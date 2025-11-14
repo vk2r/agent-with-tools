@@ -3,7 +3,7 @@ import { mastra } from "@/mastra";
 export async function POST(req: Request) {
   try {
     const { provider, threadId } = (await req.json()) as {
-      provider: "OpenAI" | "Ollama";
+      provider: "OpenAI" | "Ollama" | "xAI";
       threadId: string;
     };
     const resourceId = "user-default";
@@ -14,15 +14,27 @@ export async function POST(req: Request) {
       });
     }
 
-    if (provider !== "OpenAI" && provider !== "Ollama") {
-      return new Response("Provider inválido. Debe ser 'OpenAI' u 'Ollama'", {
-        status: 400,
-      });
+    if (!["OpenAI", "Ollama", "xAI"].includes(provider)) {
+      return new Response(
+        "Provider inválido. Debe ser 'OpenAI', 'Ollama' o 'xAI'",
+        {
+          status: 400,
+        },
+      );
     }
 
-    const selected =
-      provider === "OpenAI" ? "financeCloudAgent" : "financeLocalAgent";
-    const agent = mastra.getAgent(selected);
+    const selected = () => {
+      if (provider === "OpenAI") return "financeOpenAIAgent";
+      if (provider === "Ollama") return "financeXAIAgent";
+      if (provider === "xAI") return "financeLocalAgent";
+    };
+
+    const agent = mastra.getAgent(
+      selected() as
+        | "financeOpenAIAgent"
+        | "financeXAIAgent"
+        | "financeLocalAgent",
+    );
 
     const memory = await agent.getMemory();
     if (!memory) {

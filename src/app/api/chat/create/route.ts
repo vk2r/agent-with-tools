@@ -14,16 +14,24 @@ function hasAsyncIterator<T>(
 export async function POST(req: Request) {
   try {
     const { providerId, message, threadId } = (await req.json()) as {
-      providerId: "OpenAI" | "Ollama";
+      providerId: "OpenAI" | "Ollama" | "xAI";
       message: string;
       threadId: string;
     };
 
     const resourceId = "user-default";
-    const selected =
-      providerId === "Ollama" ? "financeLocalAgent" : "financeCloudAgent";
+    const selected = () => {
+      if (providerId === "OpenAI") return "financeOpenAIAgent";
+      if (providerId === "Ollama") return "financeXAIAgent";
+      if (providerId === "xAI") return "financeLocalAgent";
+    };
 
-    const agent = mastra.getAgent(selected);
+    const agent = mastra.getAgent(
+      selected() as
+        | "financeOpenAIAgent"
+        | "financeXAIAgent"
+        | "financeLocalAgent",
+    );
 
     const result = await agent.stream(message, {
       stopWhen: stepCountIs(5),
