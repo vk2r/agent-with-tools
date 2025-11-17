@@ -25,8 +25,8 @@ export async function POST(req: Request) {
 
     const selected = () => {
       if (provider === "OpenAI") return "financeOpenAIAgent";
-      if (provider === "Ollama") return "financeXAIAgent";
-      if (provider === "xAI") return "financeLocalAgent";
+      if (provider === "xAI") return "financeXAIAgent";
+      if (provider === "Ollama") return "financeLocalAgent";
     };
 
     const agent = mastra.getAgent(
