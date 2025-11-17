@@ -121,8 +121,8 @@ export default function ChatForm(props: Props) {
       id="chat-form"
       className={
         fixed
-          ? "px-4 md:px-0 sticky my-0 inset-x-0 bottom-6 mx-auto z-50 max-w-3xl bg-slate-100"
-          : "w-full mx-6 lg:w-2/5 lg:mx-auto bg-slate-100"
+          ? "px-4 md:px-0 sticky my-0 inset-x-0 bottom-6 mx-auto z-50 max-w-3xl"
+          : "w-full mx-6 lg:w-2/5 lg:mx-auto"
       }
     >
       <Form {...form}>

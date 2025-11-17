@@ -12,7 +12,8 @@ Agente financiero con almacenamiento de chats y uso de memoria, junto con el uso
 ## Requisitos
 
 - Node.js LTS (recomendado; 22+ mínimo)
-- Cuenta y clave de API de OpenAI si usas el proveedor `openai` (recomendado por defecto).
+- Cuenta y clave de API de OpenAI si usas el proveedor `openai`.
+- Cuenta y clave de API de xAI si usas el proveedor `xai`.
 - Para ejecucion local, el cliente Ollama debe estar instalado y se requiere una GPU con 16GB de VRAM como minimo (recomendado para ejecutar Finantier en local establemente).
 
 ### Instalación de Node.js (LTS)
@@ -30,6 +31,10 @@ Una vez instalado, asegúrate de que el servicio esté activo en http://localhos
 ollama pull hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL
 ```
 
+### Configuración de xAI
+
+Crea una cuenta en https://console.x.ai y genera una API Key. Consulta la documentación: https://x.ai/api
+
 ### Variables de entorno (`.env`)
 
 Ejemplo mínimo:
@@ -41,20 +46,23 @@ TZ="America/Santiago"
 # OpenAI (requerido si usas OpenAI)
 OPENAI_API_KEY="sk-..."
 OPENAI_CHAT_MODEL="gpt-5-nano"
+OPENAI_MEMORY_LIMIT=20
+
+# xAI (requerido si usas xAI)
+XAI_API_KEY="xai-..."
+XAI_MODEL="grok-4-fast-reasoning"
+XAI_MEMORY_LIMIT=10
 
 # Ollama (requerido si usas ollama)
 OLLAMA_BASE_URL="http://localhost:11434"
 OLLAMA_CHAT_MODEL="hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL"
-
-# Limite de memoria de mensajes (requerido para ambos proveedores)
 OLLAMA_MEMORY_LIMIT=5
-OPENAI_MEMORY_LIMIT=20
 
 # Ventana de contexto (requerido para Ollama)
 OLLAMA_CONTEXT_WINDOW=81920
 ```
 
-El proveedor por defecto es OpenAI.
+El proveedor por defecto es OpenAI. También puedes usar xAI u Ollama.
 
 ### Ejecutar
 
