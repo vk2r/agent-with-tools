@@ -14,7 +14,7 @@ export async function createThread({
   provider,
 }: {
   message: string;
-  provider: "OpenAI" | "Ollama";
+  provider: "OpenAI" | "Ollama" | "xAI";
 }): Promise<string> {
   const id = nanoid();
   await addThread({

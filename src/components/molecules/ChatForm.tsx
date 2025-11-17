@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cx } from "class-variance-authority";
 import { Brain, Loader, Pause } from "lucide-react";

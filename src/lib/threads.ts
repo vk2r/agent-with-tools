@@ -4,7 +4,7 @@ import path from "node:path";
 export type Thread = {
   id: string;
   title: string;
-  providerId: "OpenAI" | "Ollama";
+  providerId: "OpenAI" | "Ollama" | "xAI";
   firstMessage: boolean;
 };
 

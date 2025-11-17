@@ -1,12 +1,15 @@
 "use client";
 import { Landmark } from "lucide-react";
+import { nanoid } from "nanoid";
 import { useRouter } from "next/navigation";
 import { useState, ViewTransition } from "react";
-import { nanoid } from "nanoid";
 
 // Api
 import { createThread } from "@/app/actions/chat";
-
+import {
+  type Notification,
+  NotificationList,
+} from "@/components/animate-ui/components/community/notification-list";
 // Components
 import ChatForm from "@/components/molecules/ChatForm";
 import AppSidebar from "@/components/organisms/AppSidebar";
@@ -15,10 +18,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  type Notification,
-  NotificationList,
-} from "@/components/animate-ui/components/community/notification-list";
 
 export default function Page() {
   // Hooks
@@ -57,13 +56,13 @@ export default function Page() {
 
   // State
   const [isDisabled, setIsDisabled] = useState(false);
-  const [provider, setProvider] = useState<"OpenAI" | "Ollama">(
+  const [provider, setProvider] = useState<"OpenAI" | "Ollama" | "xAI">(
     defaultProvider,
   );
 
   // Methods
   async function onSubmit(values: {
-    provider: "OpenAI" | "Ollama";
+    provider: "OpenAI" | "Ollama" | "xAI";
     message: string;
   }) {
     setIsDisabled(true);
@@ -79,7 +78,7 @@ export default function Page() {
       >
         <AppSidebar />
         <SidebarInset className="bg-slate-100">
-          <header className="block md:hidden flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-100">
+          <header className="flex md:hidden h-16 shrink-0 items-center gap-2 px-4 bg-slate-100">
             <SidebarTrigger className="-ml-1 sticky top-0" />
           </header>
           <div className="h-[calc(100vh-64px)] w-full flex flex-col items-center gap-2 pb-5 justify-center bg-slate-100">

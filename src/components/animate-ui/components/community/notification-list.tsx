@@ -3,9 +3,8 @@
 import { MousePointerClick } from "lucide-react";
 
 import { motion, type Transition } from "motion/react";
-import { cn } from "@/lib/utils";
-
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const transition: Transition = {
   type: "spring",
@@ -57,7 +56,7 @@ function NotificationList(props: Props) {
   return (
     <motion.div
       className={cn(
-        "w-full mx-2 md:w-xl mx-4 bg-slate-200 dark:bg-neutral-900 p-3 rounded-3xl space-y-3 border border-slate-300 hover:shadow-md",
+        "w-full md:w-xl mx-4 bg-slate-200 dark:bg-neutral-900 p-3 rounded-3xl space-y-3 border border-slate-300 hover:shadow-md",
         className,
       )}
       initial="collapsed"
@@ -106,7 +105,7 @@ function NotificationList(props: Props) {
             ¿ Qué puedo hacer ?
           </motion.span>
           <motion.span
-            className="text-sm font-medium text-md text-neutral-600 dark:text-neutral-300 flex items-center gap-1 cursor-pointer select-none row-start-1 col-start-1 flex flex-row justify-center"
+            className="text-sm font-medium text-md text-neutral-600 dark:text-neutral-300 flex items-center gap-1 cursor-pointer select-none row-start-1 col-start-1 flex-row justify-center"
             variants={viewAllTextVariants}
             transition={textSwitchTransition}
           >

@@ -36,7 +36,7 @@ export default async function Page({ params }: Props) {
       >
         <AppSidebar id={thread.id} />
         <SidebarInset className="bg-slate-100">
-          <header className="block md:hidden flex h-16 shrink-0 items-center gap-2 px-4 bg-slate-100 sticky top-0">
+          <header className="flex md:hidden h-16 shrink-0 items-center gap-2 px-4 bg-slate-100 sticky top-0">
             <SidebarTrigger className="-ml-1" />
           </header>
           <div className="min-h-screen flex flex-col items-center justify-center relative mb-6 bg-slate-100">
