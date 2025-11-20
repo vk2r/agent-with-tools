@@ -45,21 +45,19 @@ TZ="America/Santiago"
 
 # OpenAI (requerido si usas OpenAI)
 OPENAI_API_KEY="sk-..."
-OPENAI_CHAT_MODEL="gpt-5-nano"
+OPENAI_MODEL="gpt-5-nano"
 OPENAI_MEMORY_LIMIT=20
 
 # xAI (requerido si usas xAI)
 XAI_API_KEY="xai-..."
-XAI_MODEL="grok-4-fast-reasoning"
+XAI_MODEL="grok-4-1-fast-reasoning"
 XAI_MEMORY_LIMIT=10
 
 # Ollama (requerido si usas ollama)
 OLLAMA_BASE_URL="http://localhost:11434"
 OLLAMA_CHAT_MODEL="hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL"
 OLLAMA_MEMORY_LIMIT=5
-
-# Ventana de contexto (requerido para Ollama)
-OLLAMA_CONTEXT_WINDOW=81920
+OLLAMA_CONTEXT_WINDOW=81920 # Ventana de contexto (requerido para Ollama)
 ```
 
 El proveedor por defecto es OpenAI. También puedes usar xAI u Ollama.
@@ -139,4 +137,3 @@ Se han probado los siguientes modelos locales:
 Este proyecto está licenciado bajo [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).  
 © 2025 Go Studios®. Todos los derechos reservados.  
 Consulta el archivo [LICENSE](./LICENSE) para más detalles.
-
