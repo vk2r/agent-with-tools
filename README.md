@@ -31,10 +31,6 @@ Una vez instalado, asegúrate de que el servicio esté activo en http://localhos
 ollama pull hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL
 ```
 
-### Configuración de xAI
-
-Crea una cuenta en https://console.x.ai y genera una API Key. Consulta la documentación: https://x.ai/api
-
 ### Variables de entorno (`.env`)
 
 Ejemplo mínimo:
