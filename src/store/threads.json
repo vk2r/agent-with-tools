@@ -1,16 +1,3 @@
 {
-  "threads": [
-    {
-      "id": "-kOUrYHYx3lIpk05EhjAG",
-      "title": "Obtén un historial de precios de los últimos 12 meses de Microsoft y grafícalos linealmente",
-      "firstMessage": false,
-      "providerId": "OpenAI"
-    },
-    {
-      "id": "8YGlyM8VPIaGOIViUyHDb",
-      "title": "Obtén un historial de precios de los últimos 12 meses de Microsoft y grafícalos linealmente",
-      "firstMessage": false,
-      "providerId": "xAI"
-    }
-  ]
+  "threads": []
 }
