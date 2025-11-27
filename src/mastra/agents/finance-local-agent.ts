@@ -7,16 +7,14 @@ import { Memory } from "@mastra/memory";
 import { createOllama } from "ai-sdk-ollama";
 import { formatInTimeZone } from "date-fns-tz";
 
+// Agent libs
+import AgentLib from "@/lib/agents";
+
 // MCP
 import { financeTools } from "../tools/finance-tool";
 
-// Environments
-const model = process.env.OLLAMA_MODEL ?? "";
-const context = Number(process.env.OLLAMA_CONTEXT_WINDOW ?? 65536);
-const baseURL = process.env.OLLAMA_ENDPOINT ?? "http://localhost:11434";
-const memoryLimit = Number(process.env.OLLAMA_MEMORY_LIMIT ?? "5");
-
 // Constants
+const agent = AgentLib.GetAgent("Ollama");
 const timezone = process.env.TIMEZONE ?? "America/Santiago";
 const currentTime = formatInTimeZone(
   new Date(),
@@ -30,15 +28,15 @@ const rulesInstructions = rulesRaw
   .replaceAll("${currentTime.toString()}", currentTime.toString())
   .replaceAll("${timezone}", timezone);
 
-const ollama = createOllama({ baseURL });
+const ollama = createOllama({ baseURL: agent?.baseURL });
 
 export const financeLocalAgent = new Agent({
   id: "finance-local-agent",
   name: "Finance Local Agent",
   instructions: rulesInstructions,
-  model: ollama(model, {
+  model: ollama(agent?.model ?? "", {
     options: {
-      num_ctx: context,
+      num_ctx: agent?.context,
     },
   }),
   tools: await financeTools.getTools(),
@@ -47,7 +45,7 @@ export const financeLocalAgent = new Agent({
       url: "file:./mastra.db",
     }),
     options: {
-      lastMessages: memoryLimit,
+      lastMessages: agent?.memoryLimit,
       threads: {
         generateTitle: true,
       },

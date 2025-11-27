@@ -1,4 +1,5 @@
 import { stepCountIs } from "ai-v5";
+import AgentLib, { type Agent } from "@/lib/agents";
 import { mastra } from "@/mastra";
 
 function hasAsyncIterator<T>(
@@ -14,25 +15,31 @@ function hasAsyncIterator<T>(
 export async function POST(req: Request) {
   try {
     const { providerId, message, threadId } = (await req.json()) as {
-      providerId: "OpenAI" | "Ollama" | "xAI";
+      providerId: Agent["displayName"];
       message: string;
       threadId: string;
     };
 
     const resourceId = "user-default";
-    const selected = () => {
-      if (providerId === "OpenAI") return "financeOpenAIAgent";
-      if (providerId === "Ollama") return "financeLocalAgent";
-      if (providerId === "xAI") return "financeXAIAgent";
-    };
+    const isEnabled = AgentLib.IsEnabled(providerId);
+    const agentName = AgentLib.GetAgent(providerId)?.agentName;
 
-    const agent = mastra.getAgent(
-      selected() as
-        | "financeOpenAIAgent"
-        | "financeXAIAgent"
-        | "financeLocalAgent",
-    );
+    if (!providerId || !resourceId || !threadId) {
+      return new Response("Faltan parámetros: providerId, message, threadId", {
+        status: 400,
+      });
+    }
 
+    if (!isEnabled || !agentName) {
+      return new Response(
+        "Provider inválido. Debe ser 'OpenAI', 'Ollama' o 'xAI'",
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const agent = mastra.getAgent(agentName);
     const result = await agent.stream(message, {
       stopWhen: stepCountIs(5),
       savePerStep: true,

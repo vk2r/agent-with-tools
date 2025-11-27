@@ -1,5 +1,4 @@
 import { removeThread } from "@/lib/threads";
-import { mastra } from "@/mastra";
 
 export async function POST(req: Request) {
   try {

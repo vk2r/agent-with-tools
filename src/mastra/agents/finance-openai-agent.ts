@@ -6,15 +6,15 @@ import { LibSQLStore } from "@mastra/libsql";
 import { Memory } from "@mastra/memory";
 import { formatInTimeZone } from "date-fns-tz";
 
+// Agent libs
+import AgentLib from "@/lib/agents";
+
 // MCP
 import { financeTools } from "../tools/finance-tool";
 
-// Environments
-const model = process.env.OPENAI_MODEL ?? "";
-const memoryLimt = Number(process.env.OPENAI_MEMORY_LIMIT ?? "10");
-
 // Constants
-const timezone = process.env.NEXT_PUBLIC_TIMEZONE ?? "America/Santiago";
+const agent = AgentLib.GetAgent("OpenAI");
+const timezone = process.env.TIMEZONE ?? "America/Santiago";
 const currentTime = formatInTimeZone(
   new Date(),
   timezone,
@@ -31,14 +31,14 @@ export const financeOpenAIAgent = new Agent({
   id: "finance-openai-agent",
   name: "Finance OpenAI Agent",
   instructions: rulesInstructions,
-  model: `openai/${model}`,
+  model: `openai/${agent?.model}`,
   tools: await financeTools.getTools(),
   memory: new Memory({
     storage: new LibSQLStore({
       url: "file:./mastra.db",
     }),
     options: {
-      lastMessages: memoryLimt,
+      lastMessages: agent?.memoryLimit,
       threads: {
         generateTitle: true,
       },

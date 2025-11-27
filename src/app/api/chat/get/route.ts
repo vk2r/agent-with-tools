@@ -1,12 +1,18 @@
+// Agent libs
+import AgentLib, { type Agent } from "@/lib/agents";
+
 import { mastra } from "@/mastra";
 
 export async function POST(req: Request) {
   try {
     const { provider, threadId } = (await req.json()) as {
-      provider: "OpenAI" | "Ollama" | "xAI";
+      provider: Agent["displayName"];
       threadId: string;
     };
+
     const resourceId = "user-default";
+    const isEnabled = AgentLib.IsEnabled(provider);
+    const agentName = AgentLib.GetAgent(provider)?.agentName;
 
     if (!provider || !resourceId || !threadId) {
       return new Response("Faltan parámetros: provider, resourceId, threadId", {
@@ -14,7 +20,7 @@ export async function POST(req: Request) {
       });
     }
 
-    if (!["OpenAI", "Ollama", "xAI"].includes(provider)) {
+    if (!isEnabled || !agentName) {
       return new Response(
         "Provider inválido. Debe ser 'OpenAI', 'Ollama' o 'xAI'",
         {
@@ -23,19 +29,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const selected = () => {
-      if (provider === "OpenAI") return "financeOpenAIAgent";
-      if (provider === "xAI") return "financeXAIAgent";
-      if (provider === "Ollama") return "financeLocalAgent";
-    };
-
-    const agent = mastra.getAgent(
-      selected() as
-        | "financeOpenAIAgent"
-        | "financeXAIAgent"
-        | "financeLocalAgent",
-    );
-
+    const agent = mastra.getAgent(agentName);
     const memory = await agent.getMemory();
     if (!memory) {
       return new Response(JSON.stringify({ messages: [] }), {

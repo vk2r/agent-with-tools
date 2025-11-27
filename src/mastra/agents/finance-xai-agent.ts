@@ -6,15 +6,15 @@ import { LibSQLStore } from "@mastra/libsql";
 import { Memory } from "@mastra/memory";
 import { formatInTimeZone } from "date-fns-tz";
 
+// Agent libs
+import AgentLib from "@/lib/agents";
+
 // MCP
 import { financeTools } from "../tools/finance-tool";
 
-// Environments
-const model = process.env.XAI_MODEL ?? "";
-const memoryLimt = Number(process.env.XAI_MEMORY_LIMIT ?? "10");
-
 // Constants
-const timezone = process.env.NEXT_PUBLIC_TIMEZONE ?? "America/Santiago";
+const agent = AgentLib.GetAgent("xAI");
+const timezone = process.env.TIMEZONE ?? "America/Santiago";
 const currentTime = formatInTimeZone(
   new Date(),
   timezone,
@@ -31,14 +31,14 @@ export const financeXAIAgent = new Agent({
   id: "finance-xai-agent",
   name: "Finance xAI Agent",
   instructions: rulesInstructions,
-  model: `xai/${model}`,
+  model: `xai/${agent?.model}`,
   tools: await financeTools.getTools(),
   memory: new Memory({
     storage: new LibSQLStore({
       url: "file:./mastra.db",
     }),
     options: {
-      lastMessages: memoryLimt,
+      lastMessages: agent?.memoryLimit,
       threads: {
         generateTitle: true,
       },
