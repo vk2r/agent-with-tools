@@ -1,0 +1,6 @@
+node = "lts"
+
+[settings]
+auto-install = true
+auto-clean = true
+telemetry = false
