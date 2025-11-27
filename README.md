@@ -37,23 +37,26 @@ Ejemplo mínimo:
 
 ```
 # Timezone (cambiar de acuerdo al pais de origen)
-TZ="America/Santiago"
+TIMEZONE="America/Santiago"
 
 # OpenAI (requerido si usas OpenAI)
 OPENAI_API_KEY="sk-..."
 OPENAI_MODEL="gpt-5-nano"
 OPENAI_MEMORY_LIMIT=20
+OPENAI_ENABLE=1
 
 # xAI (requerido si usas xAI)
 XAI_API_KEY="xai-..."
 XAI_MODEL="grok-4-1-fast-reasoning"
 XAI_MEMORY_LIMIT=10
+XAI_ENABLE=1
 
 # Ollama (requerido si usas ollama)
-OLLAMA_BASE_URL="http://localhost:11434"
-OLLAMA_CHAT_MODEL="hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL"
+OLLAMA_ENDPOINT="http://localhost:11434"
+OLLAMA_MODEL="hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL"
+OLLAMA_CONTEXT_WINDOW=81920
 OLLAMA_MEMORY_LIMIT=5
-OLLAMA_CONTEXT_WINDOW=81920 # Ventana de contexto (requerido para Ollama)
+OLLAMA_ENABLE=1
 ```
 
 El proveedor por defecto es OpenAI. También puedes usar xAI u Ollama.

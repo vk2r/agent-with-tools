@@ -1,39 +1,51 @@
-const agents = {
-  ollama: {
+// Definitions
+export type Agent = {
+  name: string;
+  displayName: string;
+  memoryLimit: number;
+  context: number;
+  enable: number;
+};
+
+const agents: Agent[] = [
+  {
     name: "ollama",
     displayName: "Ollama",
     memoryLimit: Number(process.env.OLLAMA_MEMORY_LIMIT ?? 5),
     context: Number(process.env.OLLAMA_CONTEXT ?? 65536),
     enable: Number(process.env.OLLAMA_ENABLE ?? 0),
   },
-  openai: {
+  {
     name: "openai",
     displayName: "OpenAI",
     memoryLimit: Number(process.env.OPENAI_MEMORY_LIMIT ?? 10),
     context: Infinity,
     enable: Number(process.env.OPENAI_ENABLE ?? 0),
   },
-  xai: {
+  {
     name: "xai",
     displayName: "xAI",
     memoryLimit: Number(process.env.XAI_MEMORY_LIMIT ?? 10),
     context: Infinity,
     enable: Number(process.env.XAI_ENABLE ?? 0),
   },
-};
+];
 
 const Agent = {
   GetEnabledAgents: () => {
     return Object.values(agents).filter((agent) => agent.enable === 1);
   },
-  GetAgent: (agent: keyof typeof agents) => {
-    return agents[agent];
+  GetAgent: (name: Agent["name"]) => {
+    return agents.find((agent) => agent.name === name);
   },
-  GetMemoryLimit: (agent: keyof typeof agents) => {
-    return agents[agent].memoryLimit;
+  GetMemoryLimit: (name: Agent["name"]) => {
+    return agents.find((agent) => agent.name === name)?.memoryLimit;
   },
-  GetContext: (agent: keyof typeof agents) => {
-    return agents[agent]?.context;
+  GetContext: (name: Agent["name"]) => {
+    return agents.find((agent) => agent.name === name)?.context;
+  },
+  IsEnabled: (name: Agent["name"]) => {
+    return agents.some((agent) => agent.name === name && agent.enable === 1);
   },
 };
 

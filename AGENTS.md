@@ -6,7 +6,7 @@ Este proyecto utiliza las siguientes herramientas principales para desarrollo de
 
 - **Next.js 16.0.0**: Framework React para aplicaciones web full-stack.
 - **TypeScript 5.9.3**: Superset de JavaScript con tipado estático.
-- **React 19.2.0**: Biblioteca para interfaces de usuario.
+- **React 19.2.0**: Biblioteca de interfaces de usuario.
 
 ## Estilos y UI
 
@@ -60,6 +60,16 @@ Este proyecto utiliza las siguientes herramientas principales para desarrollo de
 
 - **Biome 2.3.1**: Linter y formateador de código rápido.
 - **Turbopack**: Acelerador de builds para Next.js.
+
+## Gestión de versiones con Proto
+
+Proto es un gestor de versiones multi‑lenguaje que permite instalar y usar versiones específicas de herramientas sin tocar la configuración del sistema.
+
+### Instalar requirimientos
+
+```bash
+proto i
+```
 
 ## Comandos Útiles
 
