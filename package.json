@@ -19,6 +19,7 @@
     "@mastra/loggers": "^0.10.19",
     "@mastra/mcp": "^0.14.4",
     "@mastra/memory": "^0.15.12",
+    "@next/env": "^16.0.5",
     "@oevortex/ddg_search": "^1.1.3",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-dialog": "^1.1.15",
