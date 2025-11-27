@@ -1,19 +1,31 @@
 const agents = {
   ollama: {
-    memoryLimit: Number(process.env.OLLAMA_MEMORY_LIMIT ?? "5"),
-    context: Number(process.env.OLLAMA_CONTEXT ?? "65536"),
+    name: "ollama",
+    displayName: "Ollama",
+    memoryLimit: Number(process.env.OLLAMA_MEMORY_LIMIT ?? 5),
+    context: Number(process.env.OLLAMA_CONTEXT ?? 65536),
+    enable: Number(process.env.OLLAMA_ENABLE ?? 0),
   },
   openai: {
-    memoryLimit: Number(process.env.OPENAI_MEMORY_LIMIT ?? "10"),
+    name: "openai",
+    displayName: "OpenAI",
+    memoryLimit: Number(process.env.OPENAI_MEMORY_LIMIT ?? 10),
     context: Infinity,
+    enable: Number(process.env.OPENAI_ENABLE ?? 0),
   },
   xai: {
-    memoryLimit: Number(process.env.XAI_MEMORY_LIMIT ?? "10"),
+    name: "xai",
+    displayName: "xAI",
+    memoryLimit: Number(process.env.XAI_MEMORY_LIMIT ?? 10),
     context: Infinity,
+    enable: Number(process.env.XAI_ENABLE ?? 0),
   },
 };
 
 const Agent = {
+  GetEnabledAgents: () => {
+    return Object.values(agents).filter((agent) => agent.enable === 1);
+  },
   GetAgent: (agent: keyof typeof agents) => {
     return agents[agent];
   },

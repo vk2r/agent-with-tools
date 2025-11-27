@@ -63,7 +63,9 @@ Este proyecto utiliza las siguientes herramientas principales para desarrollo de
 
 ## Comandos Útiles
 
-- `npm run dev`: Inicia servidor de desarrollo con Turbopack.
-- `npm run build`: Construye la aplicación para producción.
+- `npm run dev`: Inicia el servidor de desarrollo con Turbopack.
+- `npm run build`: Construye la aplicación para producción con Turbopack.
+- `npm run start`: Inicia el servidor en modo producción con Next.js.
 - `npm run lint`: Ejecuta linting con Biome.
 - `npm run format`: Formatea código con Biome.
+- `npm run updates`: Ejecuta una búsqueda interactiva de actualizaciones de dependencias.
