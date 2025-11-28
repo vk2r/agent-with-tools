@@ -19,6 +19,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
+import type { Agent } from "@/lib/agents";
+
 export default function Page() {
   // Hooks
   const router = useRouter();
@@ -56,13 +58,12 @@ export default function Page() {
 
   // State
   const [isDisabled, setIsDisabled] = useState(false);
-  const [provider, setProvider] = useState<"OpenAI" | "Ollama" | "xAI">(
-    defaultProvider,
-  );
+  const [provider, setProvider] =
+    useState<Agent["displayName"]>(defaultProvider);
 
   // Methods
   async function onSubmit(values: {
-    provider: "OpenAI" | "Ollama" | "xAI";
+    provider: Agent["displayName"];
     message: string;
   }) {
     setIsDisabled(true);
