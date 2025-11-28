@@ -43,6 +43,5 @@ next-env.d.ts
 # mastra
 mastra.db*
 agent.db*
-/src/store/threads.json
-./src/store/threads.json
 src/store/*.*
+/src/store/*.*
