@@ -1,12 +1,13 @@
 "use server";
 
 import { nanoid } from "nanoid";
+import type { Agent } from "@/lib/agents";
 import { addThread } from "@/lib/threads";
 
 // Definitions
 export type GetChatProps = {
   threadId: string;
-  provider: "OpenAI" | "Ollama";
+  provider: Agent["displayName"];
 };
 
 export async function createThread({
@@ -14,7 +15,7 @@ export async function createThread({
   provider,
 }: {
   message: string;
-  provider: "OpenAI" | "Ollama" | "xAI";
+  provider: Agent["displayName"];
 }): Promise<string> {
   const id = nanoid();
   await addThread({
