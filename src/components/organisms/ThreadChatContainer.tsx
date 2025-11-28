@@ -10,6 +10,7 @@ import type { SubmitValues } from "@/components/organisms/ThreadChat";
 import ThreadChat from "@/components/organisms/ThreadChat";
 
 // Types
+import type { Agent } from "@/lib/agents";
 import type { Thread } from "@/lib/threads";
 
 // Icons
@@ -17,7 +18,7 @@ import { ChartLine } from "../animate-ui/icons/chart-line";
 
 interface Props {
   thread: Thread;
-  onProviderChange?: (provider: "OpenAI" | "Ollama" | "xAI") => void;
+  onProviderChange?: (provider: Agent["displayName"]) => void;
 }
 
 export default function ThreadChatContainer(props: Props) {
@@ -36,7 +37,7 @@ export default function ThreadChatContainer(props: Props) {
   // Methods
   const getMemory = async (values: {
     threadId: string;
-    providerId: "OpenAI" | "Ollama" | "xAI";
+    providerId: Agent["displayName"];
   }) => {
     try {
       const messages = await fetch("/api/chat/get", {
@@ -59,7 +60,7 @@ export default function ThreadChatContainer(props: Props) {
   };
 
   const onSubmit = async (values: {
-    provider: "OpenAI" | "Ollama" | "xAI";
+    provider: Agent["displayName"];
     message: string;
     threadId: string;
     firstMessage: boolean;

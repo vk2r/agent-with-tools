@@ -1,5 +1,3 @@
-"use client";
-
 import type { CoreMessage } from "@mastra/core";
 import { useEffect, useRef } from "react";
 
@@ -8,8 +6,9 @@ import ChatForm from "@/components/molecules/ChatForm";
 import Messages from "@/components/organisms/Messages";
 
 // Definitions
+import type { Agent } from "@/lib/agents";
 export type SubmitValues = {
-  provider: "OpenAI" | "Ollama" | "xAI";
+  provider: Agent["displayName"];
   message: string;
 };
 
@@ -20,9 +19,9 @@ export type Props = {
   error: string | null;
   isChatDisabled: boolean;
   isStreaming: boolean;
-  defaultProvider: "OpenAI" | "Ollama" | "xAI";
+  defaultProvider: Agent["displayName"];
   onSubmit: (values: SubmitValues) => void;
-  onProviderChange?: (provider: "OpenAI" | "Ollama" | "xAI") => void;
+  onProviderChange?: (provider: Agent["displayName"]) => void;
   onStop?: () => void;
 };
 
