@@ -7,6 +7,9 @@ import { z } from "zod";
 
 // Icons
 import { ArrowUpIcon } from "@/components/ui/arrow-up";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
 // UI
 import {
   DropdownMenu,
@@ -29,9 +32,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 import AgentLib, { type Agent } from "@/lib/agents";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 
 // Definitions
 export type OnSubmitProps = {
@@ -65,7 +67,6 @@ export default function ChatForm(props: Props) {
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const enabledAgentList = AgentLib.GetEnabledAgentList();
-  const defaultAgent = defaultProvider ?? AgentLib.GetDefaultAgent();
   const formSchema = z.object({
     provider: z.enum(enabledAgentList),
     message: z.string().min(1),
@@ -74,7 +75,7 @@ export default function ChatForm(props: Props) {
   // States
   const form = useForm<OnSubmitProps>({
     resolver: zodResolver(formSchema),
-    defaultValues: { provider: defaultAgent, message: "" },
+    defaultValues: { provider: defaultProvider, message: "" },
     mode: "onSubmit",
   });
 

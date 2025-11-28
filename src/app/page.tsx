@@ -10,6 +10,7 @@ import {
   type Notification,
   NotificationList,
 } from "@/components/animate-ui/components/community/notification-list";
+
 // Components
 import ChatForm from "@/components/molecules/ChatForm";
 import AppSidebar from "@/components/organisms/AppSidebar";
@@ -19,14 +20,14 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-import type { Agent } from "@/lib/agents";
+import AgentLib, { type Agent } from "@/lib/agents";
 
 export default function Page() {
   // Hooks
   const router = useRouter();
 
   // Constants
-  const defaultProvider = "OpenAI";
+  const defaultProvider = AgentLib.GetDefaultAgent() as Agent["displayName"];
   const notifications: Notification[] = [
     {
       id: nanoid(),
@@ -58,8 +59,7 @@ export default function Page() {
 
   // State
   const [isDisabled, setIsDisabled] = useState(false);
-  const [provider, setProvider] =
-    useState<Agent["displayName"]>(defaultProvider);
+  const [provider, setProvider] = useState(defaultProvider);
 
   // Methods
   async function onSubmit(values: {
