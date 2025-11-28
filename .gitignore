@@ -45,3 +45,4 @@ mastra.db*
 agent.db*
 /src/store/threads.json
 ./src/store/threads.json
+src/store/
