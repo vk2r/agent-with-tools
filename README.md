@@ -141,6 +141,9 @@ Se han probado los siguientes modelos locales:
 > - Las respuestas del agente pueden variar entre ejecuciones, versiones de modelos o parámetros.
 > - Las respuestas de cualquier modelo (Cloud o Local) no son 100% precisas. Se recomienda verificar la información.
 
+## Screenshots
+![Screenshot](docs/screenshots/full.png)
+
 ## Licencia
 Este proyecto está licenciado bajo [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).  
 © 2025 Go Studios®. Todos los derechos reservados.  
