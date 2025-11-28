@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cx } from "class-variance-authority";
 import { Brain, Loader, Pause } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 // Icons
 import { ArrowUpIcon } from "@/components/ui/arrow-up";
-
 // UI
 import {
   DropdownMenu,
@@ -30,13 +29,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Agent from "@/lib/agents";
+import AgentLib, { type Agent } from "@/lib/agents";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 
 // Definitions
 export type OnSubmitProps = {
-  provider: "OpenAI" | "Ollama" | "xAI";
+  provider: Agent["displayName"];
   message: string;
 };
 
@@ -44,8 +43,8 @@ export type Props = {
   fixed?: boolean;
   isDisabled: boolean;
   onSubmit: (values: OnSubmitProps) => Promise<void> | void;
-  onProviderChange?: (provider: "OpenAI" | "Ollama" | "xAI") => void;
-  defaultProvider?: "OpenAI" | "Ollama" | "xAI";
+  onProviderChange?: (provider: Agent["displayName"]) => void;
+  defaultProvider?: Agent["displayName"];
   isStreaming?: boolean;
   countMemory?: number;
   onStop?: () => void;
@@ -60,22 +59,26 @@ export default function ChatForm(props: Props) {
     countMemory,
     onStop,
     onSubmit,
+    defaultProvider,
     onProviderChange,
-    defaultProvider = "OpenAI",
   } = props;
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
+  const enabledAgentList = AgentLib.GetEnabledAgentList();
+  const defaultAgent = defaultProvider ?? AgentLib.GetDefaultAgent();
   const formSchema = z.object({
-    provider: z.enum(["OpenAI", "Ollama", "xAI"]),
+    provider: z.enum(enabledAgentList),
     message: z.string().min(1),
   });
 
+  // States
   const form = useForm<OnSubmitProps>({
     resolver: zodResolver(formSchema),
-    defaultValues: { provider: defaultProvider, message: "" },
+    defaultValues: { provider: defaultAgent, message: "" },
     mode: "onSubmit",
   });
+
+  const [memory, setMemory] = useState({ current: 0, limit: 0 });
 
   // Methods
   const handleUserKeyPress = (
@@ -88,33 +91,21 @@ export default function ChatForm(props: Props) {
     }
   };
 
-  const calculateCurrentMemory = (current = 0) => {
-    const limit = () => {
-      if (form.getValues("provider") === "OpenAI") {
-        return Agent.GetMemoryLimit("openai");
-      }
-      if (form.getValues("provider") === "Ollama") {
-        return Agent.GetMemoryLimit("ollama");
-      }
-      return Agent.GetMemoryLimit("xai");
-    };
-    return Math.min(current, limit());
-  };
-
-  const calculateMemoryLimit = () => {
-    if (form.getValues("provider") === "OpenAI") {
-      return Agent.GetMemoryLimit("openai");
-    }
-    if (form.getValues("provider") === "Ollama") {
-      return Agent.GetMemoryLimit("ollama");
-    }
-    return Agent.GetMemoryLimit("xai");
+  const calculateMemory = (count = 0) => {
+    const agent = AgentLib.GetAgent(form.getValues("provider"));
+    const limit = agent?.memoryLimit ?? 0;
+    const current = Math.min(count, limit);
+    setMemory({ current, limit });
   };
 
   // Effects
   useEffect(() => {
     if (!isDisabled) textAreaRef.current?.focus();
   }, [isDisabled]);
+
+  useEffect(() => {
+    calculateMemory(countMemory);
+  }, [form.getValues("provider"), countMemory]);
 
   return (
     <div
@@ -175,45 +166,22 @@ export default function ChatForm(props: Props) {
                           className="[--radius:0.95rem]"
                         >
                           <DropdownMenuLabel>Proveedor</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            className="cursor-pointer"
-                            onClick={() => {
-                              form.setValue("provider", "OpenAI", {
-                                shouldDirty: true,
-                                shouldValidate: true,
-                                shouldTouch: true,
-                              });
-                              onProviderChange?.("OpenAI");
-                            }}
-                          >
-                            OpenAI
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="cursor-pointer"
-                            onClick={() => {
-                              form.setValue("provider", "xAI", {
-                                shouldDirty: true,
-                                shouldValidate: true,
-                                shouldTouch: true,
-                              });
-                              onProviderChange?.("xAI");
-                            }}
-                          >
-                            xAI
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="cursor-pointer"
-                            onClick={() => {
-                              form.setValue("provider", "Ollama", {
-                                shouldDirty: true,
-                                shouldValidate: true,
-                                shouldTouch: true,
-                              });
-                              onProviderChange?.("Ollama");
-                            }}
-                          >
-                            Ollama
-                          </DropdownMenuItem>
+                          {enabledAgentList.map((agent) => (
+                            <DropdownMenuItem
+                              key={agent}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                form.setValue("provider", agent, {
+                                  shouldDirty: true,
+                                  shouldValidate: true,
+                                  shouldTouch: true,
+                                });
+                                onProviderChange?.(agent);
+                              }}
+                            >
+                              {agent}
+                            </DropdownMenuItem>
+                          ))}
                         </DropdownMenuContent>
                       </DropdownMenu>
 
@@ -223,8 +191,7 @@ export default function ChatForm(props: Props) {
                             {!isStreaming && (
                               <Badge variant="secondary">
                                 <div className="flex items-center justify-center gap-2">
-                                  {calculateCurrentMemory(countMemory)} /{" "}
-                                  {calculateMemoryLimit()}
+                                  {`${memory.current.toString().padStart(2, "0").replace("00", "0")} / ${memory.limit.toString().padStart(2, "0")}`}
                                   <Brain size={14} />
                                 </div>
                               </Badge>
@@ -232,8 +199,7 @@ export default function ChatForm(props: Props) {
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>
-                              Finantier recordará los ultimos{" "}
-                              {calculateCurrentMemory(countMemory)} mensajes
+                              {`Finantier recordará los ultimos ${memory.current} mensajes`}
                             </p>
                           </TooltipContent>
                         </Tooltip>
