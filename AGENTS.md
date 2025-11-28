@@ -63,7 +63,7 @@ Este proyecto utiliza las siguientes herramientas principales para desarrollo de
 
 ## Instalar requirimientos con Proto
 
-Proto es un gestor de versiones multi‑lenguaje que permite instalar y usar versiones específicas de herramientas sin tocar la configuración del sistema.
+Proto es un gestor de versiones multi‑lenguaje que permite instalar y usar versiones específicas de herramientas sin tocar la configuración del sistema. Siga las instrucciones de instalacion [Aqui](https://moonrepo.dev/docs/proto/install).
 
 ```bash
 proto i

@@ -2,23 +2,30 @@
 
 Agente financiero con almacenamiento de chats y uso de memoria, junto con el uso de las siguientes herramientas:
 
-- Generacion de graficos e informes
-- Uso de formulas financieras
+- Generación de gráficos e informes
+- Uso de fórmulas financieras
 - Precios en tiempo real
-- Busqueda en internet
+- Búsqueda en internet
 - Noticias financieras
 - Recomendaciones de acciones
 
 ## Requisitos
 
-- Node.js LTS (recomendado; 22+ mínimo)
+- Node.js LTS (recomendado; 22+ mínimo mediante Proto)
 - Cuenta y clave de API de OpenAI si usas el proveedor `openai`.
 - Cuenta y clave de API de xAI si usas el proveedor `xai`.
-- Para ejecucion local, el cliente Ollama debe estar instalado y se requiere una GPU con 16GB de VRAM como minimo (recomendado para ejecutar Finantier en local establemente).
+- Para ejecución local, el cliente Ollama debe estar instalado y se requiere una GPU con 16GB de VRAM como mínimo (recomendado para ejecutar Finantier en local establemente).
 
 ### Instalación de Node.js (LTS)
 
-Descarga el instalador LTS desde https://nodejs.org/ y sigue el asistente.
+Para instalar Node.js y sus dependencias, utilizamos la herramienta **Proto** de MoonRepo. Proto es un gestor de versiones multi‑lenguaje que permite instalar y usar versiones específicas de herramientas sin tocar la configuración del sistema. **Sigue las instrucciones de instalación en su [web oficial](https://moonrepo.dev/docs/proto/install)**
+
+```bash
+# Instala Node.js LTS (una vez instalado Proto)
+proto i
+```
+
+Con el comando anterior, Proto descargará e instalará la última versión LTS de Node.js, así como cualquier otra dependencia necesaria para el proyecto.
 
 ### Instalación de Ollama
 
@@ -62,9 +69,9 @@ OLLAMA_ENABLE=1
 OLLAMA_DEFAULT_MODEL=0
 ```
 
-El proveedor por defecto es definido por la variable DEFAULT_MODEL. Solo puede haber un proveedor por defecto.
+> El proveedor por defecto es definido por la variable DEFAULT_MODEL (solo puede haber un proveedor por defecto). Para habilitar los modelos debe modificar la variable ENABLE a 1.
 
-### Ejecutar
+### Ejecutar en la terminal
 
 ```bash
 npm install
@@ -98,7 +105,7 @@ Se tiene acceso a la siguiente lista de herramientas en formato MCP:
   - antvCharts_generate_column_chart: Genera un gráfico de columnas para comparar categorías.  
   - antvCharts_generate_line_chart: Genera un gráfico de líneas para visualizar tendencias en el tiempo.  
   - antvCharts_generate_organization_chart: Genera un diagrama de organigrama para representar estructuras jerárquicas.  
-  - antvCharts_generate_word_cloud_chart: Genera un gráfico de nube de palabras para visualizar frecuencias y pesos.  
+  - antvCharts_generate_word_cloud_chart: Genera un gráfico de nube de palabras para visualizar frecuencias y pesos.
 
 - **DuckDuckGo**
   - duckduckGo_web-search: Búsqueda en Internet usando DuckDuckGo y devuelve resultados con títulos, URLs y fragmentos.  
@@ -111,29 +118,28 @@ Se tiene acceso a la siguiente lista de herramientas en formato MCP:
 
 ### Almacenamiento
 
-Los mensajes seran almacenados en los siguientes archivos:
+Los mensajes serán almacenados en los siguientes archivos:
 - `src/store/threads.json`: Almacena los hilos de chat
-- `mastra.db*`: Almacena la configuracion del agente, mensajes de chats y su memoria. Esta será generada automaticamente la 1era vez que se inicie el agente.
+- `mastra.db*`: Almacena la configuración del agente, mensajes de chats y su memoria. Esta será generada automáticamente la 1era vez que se inicie el agente.
 
 Esto facilita respaldos y depuración. No se usa ninguna base de datos externa por defecto.
 
 ### Modelos locales
 
 Se han probado los siguientes modelos locales:
-- "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL" (recomendado): Buena ejecucion de respuestas y uso de herramientas. Baja alucinacion. Alto costo en VRAM de GPU (15GB aprox).
-- "hf.co/unsloth/granite-4.0-h-tiny-GGUF:Q8_K_XL": Buena ejecucion de respuestas y uso de herramientas. Alucinacion media. Costo medio en VRAM de GPU (11GB aprox).
+- "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_XL" (recomendado): Buena ejecución de respuestas y uso de herramientas. Baja alucinación. Alto costo en VRAM de GPU (15GB aprox).
+- "hf.co/unsloth/granite-4-0-h-tiny-GGUF:Q8_K_XL": Buena ejecución de respuestas y uso de herramientas. Alucinación media. Costo medio en VRAM de GPU (11GB aprox).
 
 ### Problemas comunes
-- Si usas Ollama y notas un uso muy alto en GPU es porque la respuesta generada es muy grande. Puedes reducir el limite de memoria de mensajes para reducir el uso de la ventana de contexto.
+- Si usas Ollama y notas un uso muy alto en GPU es porque la respuesta generada es muy grande. Puedes reducir el límite de memoria de mensajes para reducir el uso de la ventana de contexto.
 - Si usas Ollama, verifica que el servidor esté activo en `OLLAMA_BASE_URL` y que los modelos configurados estén disponibles localmente.
-- Si usas Ollama, no se recomienda bajar la ventana de contexto. Se hicieron pruebas con 65536 tokens y el uso continuo con multiples mensajes bloqueaba el agente y generaba alucinaciones masivas.
-- Si posee una GPU con mas de 16GB de VRAM (por ejemplo 24GB VRAM), puede aumentar la ventana de contexto hasta 128000 sin problemas.
+- Si usas Ollama, no se recomienda bajar la ventana de contexto. Se hicieron pruebas con 65536 tokens y el uso continuo con múltiples mensajes bloqueaba el agente y generaba alucinaciones masivas.
+- Si posee una GPU con más de 16GB de VRAM (por ejemplo 24GB VRAM), puede aumentar la ventana de contexto hasta 128000 sin problemas.
 - Si posee una GPU con menos de 16GB de VRAM, se recomienda usar OpenAI.
-
 
 #### Nota:
 > - Las respuestas del agente pueden variar entre ejecuciones, versiones de modelos o parámetros.
-> - Las respuestas de cualquier modelo (Cloud o Local) no son 100% precisas. Se recomienda verificar la informacion.
+> - Las respuestas de cualquier modelo (Cloud o Local) no son 100% precisas. Se recomienda verificar la información.
 
 ## Licencia
 Este proyecto está licenciado bajo [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).  
