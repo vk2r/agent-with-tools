@@ -1,6 +1,3 @@
-/** biome-ignore-all lint/suspicious/noTemplateCurlyInString: Required for template strings */
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { Agent } from "@mastra/core/agent";
 import { LibSQLStore } from "@mastra/libsql";
 import { Memory } from "@mastra/memory";
@@ -12,6 +9,7 @@ import AgentLib from "@/lib/agents";
 
 // MCP
 import { financeTools } from "../tools/finance-tool";
+import { getSystemInstructions } from "./system-instructions";
 
 // Constants
 const agent = AgentLib.GetAgent("Ollama");
@@ -22,18 +20,12 @@ const currentTime = formatInTimeZone(
   "yyyy-MM-dd HH:mm:ss zzz",
 );
 
-const rulesPath = join(process.cwd(), "src", "mastra", "agents", "system.md");
-const rulesRaw = readFileSync(rulesPath, "utf-8");
-const rulesInstructions = rulesRaw
-  .replaceAll("${currentTime.toString()}", currentTime.toString())
-  .replaceAll("${timezone}", timezone);
-
 const ollama = createOllama({ baseURL: agent?.baseURL });
 
 export const financeLocalAgent = new Agent({
   id: "finance-local-agent",
   name: "Finance Local Agent",
-  instructions: rulesInstructions,
+  instructions: getSystemInstructions(currentTime, timezone),
   model: ollama(agent?.model ?? "", {
     options: {
       num_ctx: agent?.context,
