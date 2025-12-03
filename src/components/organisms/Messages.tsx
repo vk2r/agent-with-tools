@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/suspicious/noArrayIndexKey: <explanation> */
+/** biome-ignore-all lint/suspicious/noArrayIndexKey: index needed for message list keys */
 "use client";
 
 import type { CoreMessage } from "@mastra/core";
@@ -9,12 +9,11 @@ type Props = {
   messages: CoreMessage[];
   streamResponse?: string;
   isStreaming?: boolean;
-  currentMessage?: string;
 };
 
 export default function Messages(props: Props) {
   // Props
-  const { messages, streamResponse, isStreaming, currentMessage } = props;
+  const { messages, streamResponse, isStreaming } = props;
 
   return (
     <div className="w-full mx-auto max-w-[1024px] mx-auto space-y-10">
@@ -36,10 +35,6 @@ export default function Messages(props: Props) {
             </Fragment>
           ))}
         </div>
-      )}
-
-      {currentMessage && isStreaming && (
-        <ChatMessage author="user" content={currentMessage} />
       )}
 
       {streamResponse && isStreaming && (

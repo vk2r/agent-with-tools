@@ -13,7 +13,6 @@ export type SubmitValues = {
 };
 
 export type Props = {
-  message: string;
   memory: CoreMessage[];
   stream: string;
   error: string | null;
@@ -29,7 +28,6 @@ export default function ThreadChat(props: Props) {
   // Props
   const {
     memory,
-    message,
     error,
     stream,
     isStreaming,
@@ -66,7 +64,6 @@ export default function ThreadChat(props: Props) {
       <Messages
         messages={memory}
         streamResponse={stream}
-        currentMessage={message}
         isStreaming={isStreaming}
       />
 

@@ -29,18 +29,17 @@ export default function ThreadChatContainer(props: Props) {
   const [stream, setStream] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentMessage, setCurrentMessage] = useState("");
   const [memory, setMemory] = useState([] as CoreMessage[]);
 
   const abortRef = useRef<AbortController | null>(null);
 
   // Methods
-  const getMemory = async (values: {
+  const loadInitialMemory = async (values: {
     threadId: string;
     providerId: Agent["displayName"];
   }) => {
     try {
-      const messages = await fetch("/api/chat/get", {
+      const response = await fetch("/api/chat/get", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -49,14 +48,25 @@ export default function ThreadChatContainer(props: Props) {
         }),
       });
 
-      if (!messages.ok) throw new Error(`HTTP ${messages.status}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      const data = await messages.json();
+      const data = await response.json();
       setMemory(data.messages);
     } catch (error) {
       console.error(error);
       setError("Error al obtener el historial");
     }
+  };
+
+  const addUserMessage = (content: string) => {
+    const userMsg: CoreMessage = { role: "user", content };
+    setMemory((prev) => [...prev, userMsg]);
+  };
+
+  const addAssistantMessage = (content: string) => {
+    if (!content.trim()) return;
+    const assistantMsg: CoreMessage = { role: "assistant", content };
+    setMemory((prev) => [...prev, assistantMsg]);
   };
 
   const onSubmit = async (values: {
@@ -66,10 +76,13 @@ export default function ThreadChatContainer(props: Props) {
     firstMessage: boolean;
   }) => {
     let wasAborted = false;
+    let accumulatedStream = "";
+
     try {
       setStream("");
       setIsStreaming(true);
-      setCurrentMessage(values.message);
+
+      addUserMessage(values.message);
 
       abortRef.current = new AbortController();
 
@@ -108,9 +121,9 @@ export default function ThreadChatContainer(props: Props) {
         const { value, done } = await reader.read();
         if (done) break;
         if (value) {
-          setStream(
-            (prev: string) => prev + decoder.decode(value, { stream: true }),
-          );
+          const chunk = decoder.decode(value, { stream: true });
+          accumulatedStream += chunk;
+          setStream((prev: string) => prev + chunk);
         }
       }
     } catch (err: unknown) {
@@ -125,13 +138,11 @@ export default function ThreadChatContainer(props: Props) {
         setError("Error al procesar el stream");
       }
     } finally {
-      setCurrentMessage("");
       setIsStreaming(false);
-      if (!wasAborted) {
-        await getMemory({
-          threadId: values.threadId,
-          providerId: values.provider,
-        });
+      setStream("");
+
+      if (!wasAborted && accumulatedStream) {
+        addAssistantMessage(accumulatedStream);
       }
     }
   };
@@ -145,7 +156,10 @@ export default function ThreadChatContainer(props: Props) {
 
     const run = async () => {
       if (!thread.firstMessage) {
-        await getMemory({ threadId: thread.id, providerId: thread.providerId });
+        await loadInitialMemory({
+          threadId: thread.id,
+          providerId: thread.providerId,
+        });
         return;
       }
 
@@ -176,7 +190,6 @@ export default function ThreadChatContainer(props: Props) {
       )}
       {(memory.length > 0 || isStreaming) && (
         <ThreadChat
-          message={currentMessage}
           memory={memory}
           stream={stream}
           error={error}
