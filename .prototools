@@ -1,4 +1,5 @@
 node = "lts"
+pnpm = "latest"
 
 [settings]
 auto-install = true

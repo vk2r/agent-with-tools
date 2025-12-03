@@ -23,7 +23,7 @@ Agente financiero con almacenamiento de chats y uso de memoria, junto con el uso
 Para instalar Node.js y sus dependencias, utilizamos la herramienta **Proto** de MoonRepo. Proto es un gestor de versiones multi‑lenguaje que permite instalar y usar versiones específicas de herramientas sin tocar la configuración del sistema. **Sigue las instrucciones de instalación en su [web oficial](https://moonrepo.dev/docs/proto/install)**
 
 ```bash
-# Instala Node.js LTS (una vez instalado Proto)
+# Instala Node.js LTS junto con PNPM Latest (una vez instalado Proto)
 proto i
 ```
 
@@ -76,8 +76,8 @@ OLLAMA_DEFAULT_MODEL=0
 ### Ejecutar en la terminal
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 > Abre `http://localhost:3000`.
