@@ -1,14 +1,13 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { motion, type Variants } from 'motion/react';
+import { motion, type Variants } from "motion/react";
 
 import {
   getVariants,
-  useAnimateIconContext,
-  IconWrapper,
   type IconProps,
-} from '@/components/animate-ui/icons/icon';
+  IconWrapper,
+  useAnimateIconContext,
+} from "@/components/animate-ui/icons/icon";
 
 type UserProps = IconProps<keyof typeof animations>;
 
@@ -22,7 +21,7 @@ const animations = {
         y: [0, 2, -2, 0],
         transition: {
           duration: 0.6,
-          ease: 'easeInOut',
+          ease: "easeInOut",
         },
       },
     },
@@ -34,7 +33,7 @@ const animations = {
         y: [0, 4, -2, 0],
         transition: {
           duration: 0.6,
-          ease: 'easeInOut',
+          ease: "easeInOut",
         },
       },
     },

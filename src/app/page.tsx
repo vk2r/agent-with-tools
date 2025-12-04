@@ -28,38 +28,44 @@ export default function Page() {
 
   // Constants
   const defaultProvider = AgentLib.GetDefaultAgent() as Agent["displayName"];
-  const notifications: Notification[] = [
+
+  // State
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [provider, setProvider] = useState(defaultProvider);
+  const [notifications, setNotifications] = useState<Notification[]>([
     {
       id: nanoid(),
       title: "Generación de gráficos",
       subtitle:
         "Obtén un historial de precios de los últimos 12 meses de Microsoft y grafícalos linealmente",
+      execute: false,
     },
     {
       id: nanoid(),
       title: "Precios en tiempo real",
       subtitle: "Busca el precio de las acciones de Apple",
+      execute: false,
     },
     {
       id: nanoid(),
       title: "Búsqueda en internet",
       subtitle: "Busca papers sobre finanzas en internet",
+      execute: false,
     },
     {
       id: nanoid(),
       title: "Noticias financieras",
       subtitle: "Obtén las últimas noticias sobre NVIDIA",
+      execute: false,
     },
     {
       id: nanoid(),
       title: "Recomendaciones de acciones",
       subtitle: "Recomienda acciones para invertir en el mercado de valores",
+      execute: false,
     },
-  ];
-
-  // State
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [provider, setProvider] = useState(defaultProvider);
+  ]);
 
   // Methods
   async function onSubmit(values: {
@@ -67,8 +73,31 @@ export default function Page() {
     message: string;
   }) {
     setIsDisabled(true);
+    setIsWaiting(true);
     const id = await createThread(values);
     router.push(`/thread/${id}`);
+  }
+
+  async function onSelectNotification(values: {
+    provider: Agent["displayName"];
+    notification: Notification;
+  }) {
+    setIsDisabled(true);
+    setIsWaiting(true);
+
+    setNotifications(
+      notifications.map((notification) => {
+        if (notification.id === values.notification.id) {
+          return { ...notification, execute: true };
+        }
+        return notification;
+      }),
+    );
+
+    await onSubmit({
+      provider: values.provider,
+      message: values.notification.subtitle,
+    });
   }
 
   return (
@@ -101,8 +130,12 @@ export default function Page() {
 
             <NotificationList
               className="mt-6"
+              isDisabled={isDisabled}
+              isWaiting={isWaiting}
               notifications={notifications}
-              onClick={(message) => onSubmit({ provider, message })}
+              onClick={(notification) =>
+                onSelectNotification({ provider, notification })
+              }
             />
           </div>
         </SidebarInset>

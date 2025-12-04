@@ -1,9 +1,10 @@
 "use client";
 
-import { MousePointerClick } from "lucide-react";
+import { Loader, MousePointerClick } from "lucide-react";
 
 import { motion, type Transition } from "motion/react";
 import { Button } from "@/components/ui/button";
+import { CursorClickIcon } from "@/components/ui/cursor-click";
 import { cn } from "@/lib/utils";
 
 const transition: Transition = {
@@ -42,17 +43,20 @@ export type Notification = {
   id: string;
   title: string;
   subtitle: string;
+  execute?: boolean;
 };
 
 type Props = {
   notifications: Notification[];
   className?: string;
-  onClick?: (message: string) => void;
+  onClick?: (notification: Notification) => void;
+  isDisabled?: boolean;
+  isWaiting?: boolean;
 };
 
 function NotificationList(props: Props) {
   // Props
-  const { notifications, className, onClick } = props;
+  const { notifications, className, onClick, isDisabled, isWaiting } = props;
   return (
     <motion.div
       className={cn(
@@ -85,10 +89,24 @@ function NotificationList(props: Props) {
               <Button
                 variant="default"
                 className="cursor-pointer"
-                onClick={() => onClick?.(notification.subtitle)}
+                disabled={isDisabled}
+                onClick={() => onClick?.(notification)}
               >
-                <MousePointerClick className="size-5" />
-                Probar
+                {isWaiting && notification.execute && (
+                  <>
+                    Desarrollando
+                    <Loader className="animate-spin size-5" />
+                  </>
+                )}
+                {isWaiting && !notification.execute && (
+                  <Loader className="animate-spin size-5" />
+                )}
+                {!isWaiting && (
+                  <>
+                    <CursorClickIcon defaultChecked />
+                    Probar
+                  </>
+                )}
               </Button>
             </div>
           </motion.div>
