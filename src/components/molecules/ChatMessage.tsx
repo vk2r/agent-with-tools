@@ -80,7 +80,11 @@ export function ChatMessage({ author, content }: ChatMessageProps) {
             <Markdown
               components={{
                 a: ({ node, ...props }) => (
-                  <a {...props} target="_blank" rel="noopener noreferrer" />
+                  <a
+                    {...props}
+                    target={props.href?.startsWith("#") ? "_self" : "_blank"}
+                    rel="noopener noreferrer"
+                  />
                 ),
               }}
               remarkPlugins={[

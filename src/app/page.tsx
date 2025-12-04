@@ -30,8 +30,8 @@ export default function Page() {
   const defaultProvider = AgentLib.GetDefaultAgent() as Agent["displayName"];
 
   // State
-  const [isDisabled, setIsDisabled] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [provider, setProvider] = useState(defaultProvider);
   const [notifications, setNotifications] = useState<Notification[]>([
     {
