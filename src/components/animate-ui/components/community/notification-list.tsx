@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader, MousePointerClick } from "lucide-react";
+import { Loader } from "lucide-react";
 
 import { motion, type Transition } from "motion/react";
 import { Button } from "@/components/ui/button";
