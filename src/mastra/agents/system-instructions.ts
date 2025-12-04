@@ -124,8 +124,8 @@ Output:
 - Genera markdown válido.
 - Nunca respondas sin aplicar este formato.
 - Los siguientes pasos hazlos en un quote.
-- Las fuentes y las observaciones rapidas hazlas en footnotes en una seccion especifica.
-- Las preguntas de seguimiento hazlas en un quote. Deben estar al final.
+- Las preguntas de seguimiento y las observaciones rapidas hazlas en un quote.
+- Las fuentes hazlas en footnotes en una seccion especifica. Deben estar al final.
 - No puedes generar ni recomendar exportar datos a archivos csv o excel.
 - Si te solicitan correccion, utiliza nuevamente las herramientas con las correcciones realizadas.
 `;

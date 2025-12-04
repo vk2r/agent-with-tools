@@ -16,7 +16,7 @@ export default function Messages(props: Props) {
   const { messages, streamResponse, isStreaming } = props;
 
   return (
-    <div className="w-full mx-auto max-w-[1024px] mx-auto space-y-10">
+    <div className="w-full mx-auto max-w-5xl space-y-10">
       {messages?.length > 0 && (
         <div className="space-y-3">
           {messages.map((message, index) => (

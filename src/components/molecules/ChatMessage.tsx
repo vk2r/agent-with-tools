@@ -3,6 +3,7 @@ import rehypeMathml from "@daiji256/rehype-mathml";
 import { Landmark } from "lucide-react";
 import Markdown from "react-markdown";
 import remarkEmoji from "remark-emoji";
+import remarkFlexibleMarkers from "remark-flexible-markers";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
@@ -44,6 +45,7 @@ export function ChatMessage({ author, content }: ChatMessageProps) {
                     remarkRehype,
                     remarkParse,
                     remarkEmoji,
+                    remarkFlexibleMarkers,
                     rehypeMathml,
                   ]}
                 >
@@ -92,6 +94,7 @@ export function ChatMessage({ author, content }: ChatMessageProps) {
                 remarkRehype,
                 remarkParse,
                 remarkEmoji,
+                remarkFlexibleMarkers,
                 rehypeMathml,
               ]}
             >
