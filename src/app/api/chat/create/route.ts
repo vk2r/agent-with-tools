@@ -1,4 +1,4 @@
-import { stepCountIs } from "ai-v5";
+import { stepCountIs } from "ai";
 import AgentLib, { type Agent } from "@/lib/agents";
 import { mastra } from "@/mastra";
 

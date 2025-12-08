@@ -11,11 +11,11 @@ const getToolsFromOS = (tool: string) => {
     const tools: Tools = {
       yahoo: {
         command: "cmd",
-        args: ["/c", "npx", "-y", "yahoo-finance-mcp"],
+        args: ["/c", "pnpm", "dlx", "yahoo-finance-mcp"],
       },
       antvCharts: {
         command: "cmd",
-        args: ["/c", "npx", "-y", "@antv/mcp-server-chart"],
+        args: ["/c", "pnpm", "dlx", "@antv/mcp-server-chart"],
         env: {
           DISABLED_TOOLS: `generate_district_map,generate_dual_axes_chart,generate_fishbone_diagram,
           generate_funnel_chart,generate_histogram_chart,generate_liquid_chart,generate_mind_map,generate_network_graph,
@@ -33,12 +33,12 @@ const getToolsFromOS = (tool: string) => {
   } else {
     const tools: Tools = {
       yahoo: {
-        command: "npx",
-        args: ["-y", "yahoo-finance-mcp"],
+        command: "pnpm",
+        args: ["pnpm", "dlx", "yahoo-finance-mcp"],
       },
       antvCharts: {
-        command: "npx",
-        args: ["-y", "@antv/mcp-server-chart"],
+        command: "pnpm",
+        args: ["pnpm", "dlx", "@antv/mcp-server-chart"],
         env: {
           DISABLED_TOOLS: `generate_district_map,generate_dual_axes_chart,generate_fishbone_diagram,
           generate_funnel_chart,generate_histogram_chart,generate_liquid_chart,generate_mind_map,generate_network_graph,
@@ -49,7 +49,8 @@ const getToolsFromOS = (tool: string) => {
         },
       },
       duckduckGo: {
-        command: "ddg-search-mcp",
+        command: "pnpm",
+        args: ["pnpm", "dlx", "@oevortex/ddg_search@latest"],
       },
     };
     return tools[tool];
