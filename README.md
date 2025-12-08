@@ -73,6 +73,17 @@ OLLAMA_DEFAULT_MODEL=0
 
 > El proveedor por defecto es definido por la variable DEFAULT_MODEL (solo puede haber un proveedor por defecto). Para habilitar los modelos debe modificar la variable ENABLE a 1.
 
+### Instalación de herramientas globales
+
+Para que las herramientas de búsqueda de DuckDuckGo funcionen correctamente, es necesario instalar globalmente el paquete `@oevortex/ddg_search`:
+
+```bash
+# Instalar globalmente con pnpm
+pnpm add -g @oevortex/ddg_search
+```
+
+> **Nota:** Esta instalación global es necesaria para que el servidor MCP de DuckDuckGo pueda ejecutar las búsquedas web correctamente.
+
 ### Ejecutar en la terminal
 
 ```bash

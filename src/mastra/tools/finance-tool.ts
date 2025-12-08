@@ -49,8 +49,7 @@ const getToolsFromOS = (tool: string) => {
         },
       },
       duckduckGo: {
-        command: "pnpm",
-        args: ["pnpm", "dlx", "@oevortex/ddg_search@latest"],
+        command: "ddg-search-mcp",
       },
     };
     return tools[tool];
