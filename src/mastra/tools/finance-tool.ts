@@ -34,11 +34,11 @@ const getToolsFromOS = (tool: string) => {
     const tools: Tools = {
       yahoo: {
         command: "pnpm",
-        args: ["pnpm", "dlx", "yahoo-finance-mcp"],
+        args: ["dlx", "yahoo-finance-mcp"],
       },
       antvCharts: {
         command: "pnpm",
-        args: ["pnpm", "dlx", "@antv/mcp-server-chart"],
+        args: ["dlx", "@antv/mcp-server-chart"],
         env: {
           DISABLED_TOOLS: `generate_district_map,generate_dual_axes_chart,generate_fishbone_diagram,
           generate_funnel_chart,generate_histogram_chart,generate_liquid_chart,generate_mind_map,generate_network_graph,
