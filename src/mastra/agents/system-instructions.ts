@@ -125,7 +125,7 @@ Output:
 - Nunca respondas sin aplicar este formato.
 - Los siguientes pasos hazlos en un quote.
 - Las preguntas de seguimiento y las observaciones rapidas hazlas en un quote.
-- Las fuentes hazlas en footnotes en una seccion especifica. Deben estar al final.
+- Si hay fuentes que mencionar, hazlas en footnotes en una seccion especifica. Deben estar al final.
 - No puedes generar ni recomendar exportar datos a archivos csv o excel.
 - Si te solicitan correccion, utiliza nuevamente las herramientas con las correcciones realizadas.
 `;
