@@ -1,47 +1,54 @@
-import { stepCountIs } from "ai";
+import { toAISdkStream } from "@mastra/ai-sdk";
+import { createUIMessageStreamResponse, stepCountIs, type UIMessage } from "ai";
 import AgentLib, { type Agent } from "@/lib/agents";
+import { updateThread } from "@/lib/threads";
 import { mastra } from "@/mastra";
-
-function hasAsyncIterator<T>(
-  obj: unknown,
-): obj is { [Symbol.asyncIterator]: () => AsyncIterator<T> } {
-  return (
-    typeof (obj as { [Symbol.asyncIterator]?: () => AsyncIterator<T> })[
-      Symbol.asyncIterator
-    ] === "function"
-  );
-}
 
 export async function POST(req: Request) {
   try {
-    const { providerId, message, threadId } = (await req.json()) as {
+    const request = await req.json();
+
+    const { providerId, messages, threadId, firstMessage } = request as {
       providerId: Agent["displayName"];
-      message: string;
+      messages: UIMessage[];
       threadId: string;
+      firstMessage: boolean;
     };
 
-    const resourceId = "user-default";
-    const isEnabled = AgentLib.IsEnabled(providerId);
-    const agentName = AgentLib.GetAgent(providerId)?.agentName;
+    if (firstMessage)
+      await updateThread(threadId, {
+        firstMessage: false,
+      });
 
-    if (!providerId || !resourceId || !threadId) {
-      return new Response("Faltan parámetros: providerId, message, threadId", {
+    const resourceId = "user-default";
+    const lastMessage = messages
+      .filter((message) => message.role === "user")
+      .findLast((message) =>
+        message.parts.find((part) => part.type === "text"),
+      );
+
+    if (!providerId || !threadId) {
+      return new Response("Faltan parámetros: providerId, threadId", {
         status: 400,
       });
     }
 
+    const isEnabled = AgentLib.IsEnabled(providerId);
+    const { agentName, reasoningEffort } = AgentLib.GetAgent(providerId) || {};
+
     if (!isEnabled || !agentName) {
       return new Response(
         "Provider inválido. Debe ser 'OpenAI', 'Ollama' o 'xAI'",
-        {
-          status: 400,
-        },
+        { status: 400 },
       );
     }
 
     const agent = mastra.getAgent(agentName);
-    const result = await agent.stream(message, {
-      stopWhen: stepCountIs(5),
+    const stream = await agent.stream(lastMessage, {
+      stopWhen: stepCountIs(10),
+      providerOptions: {
+        openai: { reasoningEffort },
+      },
       savePerStep: true,
       memory: {
         thread: threadId,
@@ -49,93 +56,8 @@ export async function POST(req: Request) {
       },
     });
 
-    const encoder = new TextEncoder();
-    let stream: ReadableStream<Uint8Array>;
-
-    const textStream = result.textStream;
-    const { signal } = req;
-    const abortPromise = new Promise<"aborted">((resolve) => {
-      if (signal.aborted) {
-        resolve("aborted");
-      } else {
-        signal.addEventListener(
-          "abort",
-          () => {
-            resolve("aborted");
-          },
-          { once: true },
-        );
-      }
-    });
-
-    if (textStream && hasAsyncIterator<string>(textStream)) {
-      const iterator = textStream[
-        Symbol.asyncIterator
-      ]() as AsyncIterator<string> & { return?: () => unknown };
-      stream = new ReadableStream<Uint8Array>({
-        async start(controller) {
-          let aborted = false;
-          const onAbort = () => {
-            aborted = true;
-            try {
-              controller.close();
-            } catch {}
-            try {
-              iterator.return?.();
-            } catch {}
-          };
-          if (signal.aborted) onAbort();
-          else signal.addEventListener("abort", onAbort, { once: true });
-          try {
-            while (!aborted) {
-              const raced = (await Promise.race([
-                iterator.next() as Promise<IteratorResult<string>>,
-                abortPromise,
-              ])) as IteratorResult<string> | "aborted";
-              if (raced === "aborted") break;
-              const { value, done } = raced as IteratorResult<string>;
-              if (done) break;
-              if (value) {
-                controller.enqueue(encoder.encode(value));
-              }
-            }
-            controller.close();
-          } catch (err) {
-            controller.error(err);
-          }
-        },
-        cancel() {
-          try {
-            iterator.return?.();
-          } catch {}
-        },
-      });
-    } else {
-      stream = new ReadableStream<Uint8Array>({
-        async start(controller) {
-          try {
-            const raced = (await Promise.race([
-              result.text as Promise<string | undefined>,
-              abortPromise,
-            ])) as string | undefined | "aborted";
-            if (raced !== "aborted") {
-              const full = raced as string | undefined;
-              controller.enqueue(encoder.encode(full ?? ""));
-            }
-            controller.close();
-          } catch (err) {
-            controller.error(err);
-          }
-        },
-      });
-    }
-
-    return new Response(stream, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-cache",
-        "X-Accel-Buffering": "no",
-      },
+    return createUIMessageStreamResponse({
+      stream: toAISdkStream(stream, { from: "agent" }),
     });
   } catch (error) {
     console.error(error);

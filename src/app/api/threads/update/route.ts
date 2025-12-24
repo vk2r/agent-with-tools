@@ -1,4 +1,4 @@
-import { updateThread, type Thread } from "@/lib/threads";
+import { type Thread, updateThread } from "@/lib/threads";
 
 export async function POST(req: Request) {
   try {
@@ -14,10 +14,10 @@ export async function POST(req: Request) {
         : undefined;
 
     if (!id || !updates) {
-      return new Response(
-        JSON.stringify({ error: "Parámetros inválidos" }),
-        { status: 400, headers: { "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Parámetros inválidos" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Solo permitir campos válidos del thread (excepto id) con validación de tipos
@@ -41,16 +41,16 @@ export async function POST(req: Request) {
 
     const updated = await updateThread(id, safeUpdates);
     if (!updated) {
-      return new Response(
-        JSON.stringify({ error: "Thread no encontrado" }),
-        { status: 404, headers: { "Content-Type": "application/json" } },
-      );
+      return new Response(JSON.stringify({ error: "Thread no encontrado" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
-    return new Response(
-      JSON.stringify({ thread: updated }),
-      { status: 200, headers: { "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ thread: updated }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error(error);
     return new Response(

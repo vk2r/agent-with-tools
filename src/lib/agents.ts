@@ -4,6 +4,7 @@ export type Agent = {
   displayName: "Ollama" | "OpenAI" | "xAI";
   agentName: "financeLocalAgent" | "financeOpenAIAgent" | "financeXAIAgent";
   id: "finance-local-agent" | "finance-openai-agent" | "finance-xai-agent";
+  reasoningEffort?: false | "low" | "medium" | "high";
   memoryLimit: number;
   context: number;
   enable: boolean;
@@ -43,6 +44,7 @@ const agents: Agent[] = [
     displayName: "OpenAI",
     agentName: "financeOpenAIAgent",
     id: "finance-openai-agent",
+    reasoningEffort: "low",
     model: process.env.OPENAI_MODEL ?? process.env.NEXT_PUBLIC_OPENAI_MODEL,
     memoryLimit: Number(
       process.env.OPENAI_MEMORY_LIMIT ??

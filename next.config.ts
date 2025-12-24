@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@mastra/*"],
+  reactStrictMode: false,
   devIndicators: false,
   reactCompiler: true,
   experimental: {

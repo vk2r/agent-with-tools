@@ -2,6 +2,7 @@
 
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
+import { getInitialMessages } from "@/app/actions/chat";
 
 // Components
 import AppSidebar from "@/components/organisms/AppSidebar";
@@ -28,6 +29,12 @@ export default async function Page({ params }: Props) {
   const thread = await getThread(id);
   if (!thread) notFound();
 
+  // Initial messages
+  const initialMessages = await getInitialMessages(
+    thread.id,
+    thread.providerId,
+  );
+
   return (
     <ViewTransition>
       <SidebarProvider
@@ -40,7 +47,10 @@ export default async function Page({ params }: Props) {
             <SidebarTrigger className="-ml-1" />
           </header>
           <div className="min-h-screen flex flex-col items-center justify-center relative mb-6 bg-slate-100">
-            {thread && <ThreadChatContainer thread={thread} />}
+            <ThreadChatContainer
+              thread={thread}
+              initialMessages={initialMessages}
+            />
           </div>
         </SidebarInset>
       </SidebarProvider>

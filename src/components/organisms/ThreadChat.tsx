@@ -1,4 +1,4 @@
-import type { ModelMessage } from "ai";
+import type { UIMessage } from "@ai-sdk/react";
 import { useEffect, useRef } from "react";
 
 // Components
@@ -13,8 +13,7 @@ export type SubmitValues = {
 };
 
 export type Props = {
-  memory: ModelMessage[];
-  stream: string;
+  messages: UIMessage[];
   error: string | null;
   isChatDisabled: boolean;
   isStreaming: boolean;
@@ -27,9 +26,8 @@ export type Props = {
 export default function ThreadChat(props: Props) {
   // Props
   const {
-    memory,
+    messages,
     error,
-    stream,
     isStreaming,
     isChatDisabled,
     defaultProvider,
@@ -41,17 +39,12 @@ export default function ThreadChat(props: Props) {
   // Constants
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const countMemory =
-    memory
-      ?.filter((message) => ["assistant", "user"].includes(message.role))
-      ?.filter((message) => typeof message.content === "string")?.length ?? 0;
+    messages?.filter((m) => ["assistant", "user"].includes(m.role))?.length ??
+    0;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [memory, stream]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  });
+  }, [messages.length]);
 
   return (
     <div className="w-full justify-center bg-slate-100">
@@ -61,11 +54,7 @@ export default function ThreadChat(props: Props) {
         </div>
       )}
 
-      <Messages
-        messages={memory}
-        streamResponse={stream}
-        isStreaming={isStreaming}
-      />
+      <Messages messages={messages} isStreaming={isStreaming} />
 
       <ChatForm
         fixed

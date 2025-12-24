@@ -1,9 +1,10 @@
 "use client";
 
-import type { ModelMessage } from "ai";
-import { useEffect, useRef, useState } from "react";
+import { type UIMessage, useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
 
 // Definitions
+import { useEffect } from "react";
 import type { SubmitValues } from "@/components/organisms/ThreadChat";
 
 // Components
@@ -18,194 +19,66 @@ import { ChartLine } from "../animate-ui/icons/chart-line";
 
 interface Props {
   thread: Thread;
+  initialMessages?: UIMessage[];
   onProviderChange?: (provider: Agent["displayName"]) => void;
 }
 
 export default function ThreadChatContainer(props: Props) {
   // Props
-  const { thread, onProviderChange } = props;
+  const { thread, initialMessages, onProviderChange } = props;
 
-  // States
-  const [stream, setStream] = useState("");
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [memory, setMemory] = useState([] as ModelMessage[]);
+  // Hooks
+  const { messages, status, error, sendMessage, stop } = useChat({
+    id: thread.id,
+    messages: initialMessages,
+    transport: new DefaultChatTransport({
+      api: "/api/chat/create",
+    }),
+  });
 
-  const abortRef = useRef<AbortController | null>(null);
+  const isReady = messages.length > 0 || ["streaming"].includes(status);
+  const isStreaming = ["submitted", "streaming"].includes(status);
 
-  // Methods
-  const loadInitialMemory = async (values: {
-    threadId: string;
-    providerId: Agent["displayName"];
-  }) => {
-    try {
-      const response = await fetch("/api/chat/get", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          threadId: values.threadId,
-          provider: values.providerId,
-        }),
-      });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      const data = await response.json();
-      setMemory(data.messages);
-    } catch (error) {
-      console.error(error);
-      setError("Error al obtener el historial");
-    }
-  };
-
-  const addUserMessage = (content: string) => {
-    const userMsg: ModelMessage = { role: "user", content };
-    setMemory((prev) => [...prev, userMsg]);
-  };
-
-  const addAssistantMessage = (content: string) => {
-    if (!content.trim()) return;
-    const assistantMsg: ModelMessage = { role: "assistant", content };
-    setMemory((prev) => [...prev, assistantMsg]);
-  };
-
-  const onSubmit = async (values: {
-    provider: Agent["displayName"];
-    message: string;
-    threadId: string;
-    firstMessage: boolean;
-  }) => {
-    let wasAborted = false;
-    let accumulatedStream = "";
-
-    try {
-      setStream("");
-      setIsStreaming(true);
-
-      addUserMessage(values.message);
-
-      abortRef.current = new AbortController();
-
-      const agent = await fetch("/api/chat/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          threadId: values.threadId,
+  const handleSubmit = async (values: SubmitValues) => {
+    sendMessage(
+      { text: values.message },
+      {
+        body: {
+          threadId: thread.id,
           providerId: values.provider,
-          message: values.message,
-        }),
-        signal: abortRef.current.signal,
-      });
-
-      if (!agent.ok) throw new Error(`HTTP ${agent.status}`);
-
-      if (values.firstMessage) {
-        const update = await fetch("/api/threads/update", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: values.threadId,
-            updates: { firstMessage: false },
-          }),
-        });
-
-        if (!update.ok) throw new Error(`HTTP ${agent.status}`);
-      }
-
-      const reader = agent.body?.getReader();
-      if (!reader) throw new Error("Sin lector de stream");
-
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        if (value) {
-          const chunk = decoder.decode(value, { stream: true });
-          accumulatedStream += chunk;
-          setStream((prev: string) => prev + chunk);
-        }
-      }
-    } catch (err: unknown) {
-      let name: string | undefined;
-      if (typeof err === "object" && err && "name" in err) {
-        name = String((err as Record<string, unknown>).name);
-      }
-      if (name === "AbortError") {
-        wasAborted = true;
-      } else {
-        console.error(err);
-        setError("Error al procesar el stream");
-      }
-    } finally {
-      setIsStreaming(false);
-      setStream("");
-
-      if (!wasAborted && accumulatedStream) {
-        addAssistantMessage(accumulatedStream);
-      }
-    }
-  };
-
-  const stopStreaming = () => {
-    if (abortRef.current) abortRef.current.abort();
+        },
+      },
+    );
   };
 
   useEffect(() => {
-    if (!thread) return;
-
-    const run = async () => {
-      if (!thread.firstMessage) {
-        await loadInitialMemory({
-          threadId: thread.id,
-          providerId: thread.providerId,
-        });
-        return;
-      }
-
-      const key = `firstMessageSent:${thread.id}`;
-
-      try {
-        if (typeof window !== "undefined") {
-          if (sessionStorage.getItem(key)) return;
-          sessionStorage.setItem(key, "1");
-        }
-      } catch {}
-
-      await onSubmit({
-        provider: thread.providerId,
-        message: thread.title,
-        threadId: thread.id,
-        firstMessage: thread.firstMessage,
-      });
-    };
-
-    run();
-  }, [thread.id]);
+    if (thread.firstMessage) {
+      sendMessage(
+        { text: thread.title },
+        {
+          body: {
+            threadId: thread.id,
+            providerId: thread.providerId,
+            firstMessage: thread.firstMessage,
+          },
+        },
+      );
+    }
+  }, []);
 
   return (
     <>
-      {!thread.firstMessage && memory.length === 0 && !isStreaming && (
-        <ChartLine animate loop size={100} />
-      )}
-      {(memory.length > 0 || isStreaming) && (
+      {!isReady && <ChartLine animate loop size={100} />}
+      {isReady && (
         <ThreadChat
-          memory={memory}
-          stream={stream}
-          error={error}
+          messages={messages}
+          error={error?.message ?? null}
           isStreaming={isStreaming}
           isChatDisabled={isStreaming}
-          onStop={stopStreaming}
+          onStop={stop}
           onProviderChange={onProviderChange}
           defaultProvider={thread.providerId}
-          onSubmit={async (values: SubmitValues) => {
-            await onSubmit({
-              message: values.message,
-              provider: values.provider,
-              threadId: thread.id,
-              firstMessage: false,
-            });
-          }}
+          onSubmit={handleSubmit}
         />
       )}
     </>
