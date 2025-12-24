@@ -1,4 +1,4 @@
-import type { CoreMessage } from "@mastra/core";
+import type { ModelMessage } from "ai";
 import { useEffect, useRef } from "react";
 
 // Components
@@ -13,7 +13,7 @@ export type SubmitValues = {
 };
 
 export type Props = {
-  memory: CoreMessage[];
+  memory: ModelMessage[];
   stream: string;
   error: string | null;
   isChatDisabled: boolean;

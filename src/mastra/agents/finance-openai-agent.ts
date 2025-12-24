@@ -19,21 +19,22 @@ const currentTime = formatInTimeZone(
   "yyyy-MM-dd HH:mm:ss zzz",
 );
 
+if (!agent) throw new Error("Agent for OpenAI not found");
+
 export const financeOpenAIAgent = new Agent({
-  id: "finance-openai-agent",
+  id: agent.id,
   name: "Finance OpenAI Agent",
   instructions: getSystemInstructions(currentTime, timezone),
   model: `openai/${agent?.model}`,
-  tools: await financeTools.getTools(),
+  tools: await financeTools.listTools(),
   memory: new Memory({
     storage: new LibSQLStore({
+      id: agent.id,
       url: "file:./mastra.db",
     }),
     options: {
-      lastMessages: agent?.memoryLimit,
-      threads: {
-        generateTitle: true,
-      },
+      lastMessages: agent.memoryLimit,
+      generateTitle: true,
     },
   }),
 });

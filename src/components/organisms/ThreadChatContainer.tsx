@@ -1,6 +1,6 @@
 "use client";
 
-import type { CoreMessage } from "@mastra/core";
+import type { ModelMessage } from "ai";
 import { useEffect, useRef, useState } from "react";
 
 // Definitions
@@ -29,7 +29,7 @@ export default function ThreadChatContainer(props: Props) {
   const [stream, setStream] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [memory, setMemory] = useState([] as CoreMessage[]);
+  const [memory, setMemory] = useState([] as ModelMessage[]);
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -59,13 +59,13 @@ export default function ThreadChatContainer(props: Props) {
   };
 
   const addUserMessage = (content: string) => {
-    const userMsg: CoreMessage = { role: "user", content };
+    const userMsg: ModelMessage = { role: "user", content };
     setMemory((prev) => [...prev, userMsg]);
   };
 
   const addAssistantMessage = (content: string) => {
     if (!content.trim()) return;
-    const assistantMsg: CoreMessage = { role: "assistant", content };
+    const assistantMsg: ModelMessage = { role: "assistant", content };
     setMemory((prev) => [...prev, assistantMsg]);
   };
 

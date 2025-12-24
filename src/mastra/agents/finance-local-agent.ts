@@ -20,27 +20,28 @@ const currentTime = formatInTimeZone(
   "yyyy-MM-dd HH:mm:ss zzz",
 );
 
-const ollama = createOllama({ baseURL: agent?.baseURL });
+if (!agent) throw new Error("Agent for Ollama not found");
+
+const ollama = createOllama({ baseURL: agent.baseURL });
 
 export const financeLocalAgent = new Agent({
-  id: "finance-local-agent",
+  id: agent.id,
   name: "Finance Local Agent",
   instructions: getSystemInstructions(currentTime, timezone),
   model: ollama(agent?.model ?? "", {
     options: {
-      num_ctx: agent?.context,
+      num_ctx: agent.context,
     },
   }),
-  tools: await financeTools.getTools(),
+  tools: await financeTools.listTools(),
   memory: new Memory({
     storage: new LibSQLStore({
+      id: agent.id,
       url: "file:./mastra.db",
     }),
     options: {
-      lastMessages: agent?.memoryLimit,
-      threads: {
-        generateTitle: true,
-      },
+      lastMessages: agent.memoryLimit,
+      generateTitle: true,
     },
   }),
 });

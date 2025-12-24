@@ -10,16 +10,11 @@ import { financeXAIAgent } from "./agents/finance-xai-agent";
 export const mastra = new Mastra({
   agents: { financeOpenAIAgent, financeXAIAgent, financeLocalAgent },
   storage: new LibSQLStore({
+    id: "mastra",
     url: "file:./mastra.db",
   }),
   logger: new PinoLogger({
     name: "Mastra",
     level: "info",
   }),
-  telemetry: {
-    enabled: false,
-  },
-  observability: {
-    default: { enabled: false },
-  },
 });

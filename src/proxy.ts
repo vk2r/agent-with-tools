@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/server";
 
 export async function proxy(request: NextRequest) {
+  /*
   const session = await auth.api.getSession({
     headers: request.headers,
   });
@@ -14,7 +15,7 @@ export async function proxy(request: NextRequest) {
     loginUrl.searchParams.set("callbackURL", callbackURL);
     return NextResponse.redirect(loginUrl);
   }
-
+  */
   return NextResponse.next();
 }
 

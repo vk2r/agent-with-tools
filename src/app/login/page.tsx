@@ -31,7 +31,7 @@ type SignInValues = z.infer<typeof signInSchema>;
 const signUpSchema = z
   .object({
     name: z.string().min(1, "Ingresa tu nombre"),
-    email: z.string().email("Ingresa un email válido"),
+    email: z.email("Ingresa un email válido"),
     password: z
       .string()
       .min(8, "La contraseña debe tener al menos 8 caracteres"),
@@ -77,8 +77,8 @@ export default function LoginPage() {
     if (isPending) return;
 
     const hasSession =
-      !!(data as unknown as { user?: unknown }).user ||
-      !!(data as unknown as { session?: unknown }).session;
+      !!(data as unknown as { user?: unknown })?.user ||
+      !!(data as unknown as { session?: unknown })?.session;
 
     if (hasSession) {
       router.replace(callbackURL);

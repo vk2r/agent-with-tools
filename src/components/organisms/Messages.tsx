@@ -1,12 +1,12 @@
 /** biome-ignore-all lint/suspicious/noArrayIndexKey: index needed for message list keys */
 "use client";
 
-import type { CoreMessage } from "@mastra/core";
+import type { ModelMessage } from "ai";
 import { Fragment } from "react";
 import ChatMessage from "@/components/molecules/ChatMessage";
 
 type Props = {
-  messages: CoreMessage[];
+  messages: ModelMessage[];
   streamResponse?: string;
   isStreaming?: boolean;
 };
@@ -22,14 +22,14 @@ export default function Messages(props: Props) {
           {messages.map((message, index) => (
             <Fragment key={`current-list-${index}`}>
               {["user", "assistant"].includes(message.role) &&
-                typeof message.content === "string" &&
-                message.content && (
+                //@ts-expect-error
+                message.content?.content && (
                   <ChatMessage
-                    key={`${message.role}-${index}-${message.content}`}
+                    //@ts-expect-error
+                    key={`${message.role}-${index}-${message.content?.content}`}
                     author={message.role}
-                    content={
-                      typeof message.content === "string" ? message.content : ""
-                    }
+                    //@ts-expect-error
+                    content={message.content?.content ?? ""}
                   />
                 )}
             </Fragment>

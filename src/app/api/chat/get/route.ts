@@ -37,12 +37,12 @@ export async function POST(req: Request) {
       });
     }
 
-    const { messages, uiMessages } = await memory.query({
+    const { messages } = await memory.recall({
       threadId,
       resourceId,
     });
 
-    return new Response(JSON.stringify({ messages, uiMessages }), {
+    return new Response(JSON.stringify({ messages }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {

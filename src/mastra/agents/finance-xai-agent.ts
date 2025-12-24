@@ -19,21 +19,22 @@ const currentTime = formatInTimeZone(
   "yyyy-MM-dd HH:mm:ss zzz",
 );
 
+if (!agent) throw new Error("Agent for xAI not found");
+
 export const financeXAIAgent = new Agent({
-  id: "finance-xai-agent",
+  id: agent.id,
   name: "Finance xAI Agent",
   instructions: getSystemInstructions(currentTime, timezone),
   model: `xai/${agent?.model}`,
-  tools: await financeTools.getTools(),
+  tools: await financeTools.listTools(),
   memory: new Memory({
     storage: new LibSQLStore({
+      id: agent.id,
       url: "file:./mastra.db",
     }),
     options: {
-      lastMessages: agent?.memoryLimit,
-      threads: {
-        generateTitle: true,
-      },
+      lastMessages: agent.memoryLimit,
+      generateTitle: true,
     },
   }),
 });
