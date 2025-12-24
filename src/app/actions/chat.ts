@@ -26,6 +26,7 @@ export async function getInitialMessages(
 
     return toAISdkV5Messages(messages);
   } catch (error) {
+    console.log(error);
     return [];
   }
 }

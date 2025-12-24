@@ -44,7 +44,7 @@ export default function ThreadChat(props: Props) {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]);
+  }, [messages.flatMap((message) => message.parts), isStreaming]);
 
   return (
     <div className="w-full justify-center bg-slate-100">
