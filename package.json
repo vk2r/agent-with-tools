@@ -11,8 +11,8 @@
     "studio": "mastra dev",
     "format": "biome format --write",
     "pwned": "pnpm dlx npwned",
-    "updates": "pnpm dlx npm-check-updates -ui --format group",
-    "shai-hulud": "pnpm dlx shai-hulud-2-scanner"
+    "shai-hulud": "pnpm dlx shai-hulud-2-scanner",
+    "updates": "pnpm dlx npm-check-updates -ui --format group"
   },
   "dependencies": {
     "@ai-sdk/provider-utils": "^4.0.1",

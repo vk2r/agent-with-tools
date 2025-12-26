@@ -14,6 +14,11 @@ export type FinanceAgentUIMessage = InferAgentUIMessage<
 
 export const mastra = new Mastra({
   agents: { financeOpenAIAgent, financeXAIAgent, financeLocalAgent },
+  server: {
+    port: 8080,
+    host: "0.0.0.0",
+    studioBase: "/studio",
+  },
   storage: new LibSQLStore({
     id: "mastra",
     url: "file:./mastra.db",
