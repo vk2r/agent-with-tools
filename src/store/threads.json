@@ -1,3 +1,28 @@
 {
-  "threads": []
+  "threads": [
+    {
+      "id": "94whA3otsIOTHTG8CSApc",
+      "title": "Recomienda acciones para invertir en el mercado de valores",
+      "firstMessage": false,
+      "providerId": "xAI"
+    },
+    {
+      "id": "QkHF_qVIXNniE1ImFjBLV",
+      "title": "Recomienda acciones para invertir en el mercado de valores",
+      "firstMessage": false,
+      "providerId": "xAI"
+    },
+    {
+      "id": "WCy0-yWrQ5rjqbuHRgMPN",
+      "title": "Obtén un historial de precios de los últimos 12 meses de Microsoft y grafícalos linealmente",
+      "firstMessage": false,
+      "providerId": "xAI"
+    },
+    {
+      "id": "4PrRvuTgOtVfYBTesx83z",
+      "title": "Busca el precio de las acciones de Apple",
+      "firstMessage": false,
+      "providerId": "Ollama"
+    }
+  ]
 }
