@@ -20,7 +20,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Solo permitir campos válidos del thread (excepto id) con validación de tipos
     const safeUpdates: Partial<Omit<Thread, "id">> = {};
     if (typeof updates.title === "string") {
       safeUpdates.title = updates.title;

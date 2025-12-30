@@ -14,13 +14,13 @@ export type SubmitValues = {
 
 export type Props = {
   messages: UIMessage[];
-  error: string | null;
   isChatDisabled: boolean;
   isStreaming: boolean;
   defaultProvider: Agent["displayName"];
   onSubmit: (values: SubmitValues) => void;
   onProviderChange?: (provider: Agent["displayName"]) => void;
   onStop?: () => void;
+  error?: string;
 };
 
 export default function ThreadChat(props: Props) {

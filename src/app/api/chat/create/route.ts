@@ -47,7 +47,11 @@ export async function POST(req: Request) {
     const stream = await agent.stream(lastMessage, {
       stopWhen: stepCountIs(10),
       providerOptions: {
-        openai: { reasoningEffort },
+        openai: {
+          store: false,
+          reasoningEffort,
+          include: ["reasoning.encrypted_content"],
+        },
       },
       savePerStep: true,
       memory: {
@@ -60,7 +64,7 @@ export async function POST(req: Request) {
       stream: toAISdkStream(stream, { from: "agent" }),
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return new Response("Error interno del servidor", { status: 500 });
   }
 }

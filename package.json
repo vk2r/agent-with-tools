@@ -9,8 +9,8 @@
     "start": "next start",
     "lint": "biome check",
     "studio": "mastra dev",
-    "format": "biome format --write",
     "pwned": "pnpm dlx npwned",
+    "format": "biome format --write",
     "shai-hulud": "pnpm dlx shai-hulud-2-scanner",
     "updates": "pnpm dlx npm-check-updates -ui --format group"
   },

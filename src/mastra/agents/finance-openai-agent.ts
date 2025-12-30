@@ -24,7 +24,17 @@ if (!agent) throw new Error("Agent for OpenAI not found");
 export const financeOpenAIAgent = new Agent({
   id: agent.id,
   name: "Finance OpenAI Agent",
-  instructions: getSystemInstructions(currentTime, timezone),
+  instructions: {
+    role: "system",
+    content: getSystemInstructions(currentTime, timezone),
+    providerOptions: {
+      openai: {
+        store: false,
+        include: ["reasoning.encrypted_content"],
+        reasoningEffort: agent.reasoningEffort ?? "medium",
+      },
+    },
+  },
   model: `openai/${agent?.model}`,
   tools: await financeTools.listTools(),
   memory: new Memory({

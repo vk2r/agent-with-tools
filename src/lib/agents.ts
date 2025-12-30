@@ -4,7 +4,7 @@ export type Agent = {
   displayName: "Ollama" | "OpenAI" | "xAI";
   agentName: "financeLocalAgent" | "financeOpenAIAgent" | "financeXAIAgent";
   id: "finance-local-agent" | "finance-openai-agent" | "finance-xai-agent";
-  reasoningEffort?: false | "low" | "medium" | "high";
+  reasoningEffort: false | "low" | "medium" | "high";
   memoryLimit: number;
   context: number;
   enable: boolean;
@@ -19,6 +19,7 @@ const agents: Agent[] = [
     displayName: "Ollama",
     agentName: "financeLocalAgent",
     id: "finance-local-agent",
+    reasoningEffort: false,
     model: process.env.OLLAMA_MODEL ?? process.env.NEXT_PUBLIC_OLLAMA_MODEL,
     baseURL:
       process.env.OLLAMA_ENDPOINT ?? process.env.NEXT_PUBLIC_OLLAMA_ENDPOINT,
@@ -44,7 +45,7 @@ const agents: Agent[] = [
     displayName: "OpenAI",
     agentName: "financeOpenAIAgent",
     id: "finance-openai-agent",
-    reasoningEffort: "low",
+    reasoningEffort: "medium",
     model: process.env.OPENAI_MODEL ?? process.env.NEXT_PUBLIC_OPENAI_MODEL,
     memoryLimit: Number(
       process.env.OPENAI_MEMORY_LIMIT ??
@@ -66,6 +67,7 @@ const agents: Agent[] = [
     displayName: "xAI",
     agentName: "financeXAIAgent",
     id: "finance-xai-agent",
+    reasoningEffort: false,
     model: process.env.XAI_MODEL ?? process.env.NEXT_PUBLIC_XAI_MODEL,
     memoryLimit: Number(
       process.env.XAI_MEMORY_LIMIT ?? process.env.NEXT_PUBLIC_XAI_MEMORY_LIMIT,

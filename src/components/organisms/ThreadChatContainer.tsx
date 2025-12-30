@@ -72,7 +72,7 @@ export default function ThreadChatContainer(props: Props) {
       {isReady && (
         <ThreadChat
           messages={messages}
-          error={error?.message ?? null}
+          error={error?.message}
           isStreaming={isStreaming}
           isChatDisabled={isStreaming}
           onStop={stop}
