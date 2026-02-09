@@ -23,16 +23,17 @@ const currentTime = formatInTimeZone(
 if (!agent) throw new Error("Agent for Ollama not found");
 
 const ollama = createOllama({ baseURL: agent.baseURL });
+const model = ollama(agent?.model ?? "", {
+  options: {
+    num_ctx: agent.context,
+  },
+});
 
 export const financeLocalAgent = new Agent({
   id: agent.id,
   name: "Finance Local Agent",
   instructions: getSystemInstructions(currentTime, timezone),
-  model: ollama(agent?.model ?? "", {
-    options: {
-      num_ctx: agent.context,
-    },
-  }),
+  model,
   tools: await financeTools.listTools(),
   memory: new Memory({
     storage: new LibSQLStore({

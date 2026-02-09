@@ -1,5 +1,5 @@
-import { toAISdkStream } from "@mastra/ai-sdk";
-import { createUIMessageStreamResponse, stepCountIs, type UIMessage } from "ai";
+import { handleChatStream, toAISdkStream } from "@mastra/ai-sdk";
+import { createUIMessageStreamResponse, type UIMessage } from "ai";
 import AgentLib, { type Agent } from "@/lib/agents";
 import { updateThread } from "@/lib/threads";
 import { mastra } from "@/mastra";
@@ -21,12 +21,6 @@ export async function POST(req: Request) {
       });
 
     const resourceId = "user-default";
-    const lastMessage = messages
-      .filter((message) => message.role === "user")
-      .findLast((message) =>
-        message.parts.find((part) => part.type === "text"),
-      );
-
     if (!providerId || !threadId) {
       return new Response("Faltan parámetros: providerId, threadId", {
         status: 400,
@@ -34,35 +28,28 @@ export async function POST(req: Request) {
     }
 
     const isEnabled = AgentLib.IsEnabled(providerId);
-    const { agentName, reasoningEffort } = AgentLib.GetAgent(providerId) || {};
+    const { agentName, id } = AgentLib.GetAgent(providerId) || {};
 
-    if (!isEnabled || !agentName) {
+    if (!isEnabled || !agentName || !id) {
       return new Response(
         "Provider inválido. Debe ser 'OpenAI', 'Ollama' o 'xAI'",
         { status: 400 },
       );
     }
 
-    const agent = mastra.getAgent(agentName);
-    const stream = await agent.stream(lastMessage, {
-      stopWhen: stepCountIs(10),
-      providerOptions: {
-        openai: {
-          store: false,
-          reasoningEffort,
-          include: ["reasoning.encrypted_content"],
-        },
-      },
-      savePerStep: true,
-      memory: {
-        thread: threadId,
-        resource: resourceId,
+    const stream = await handleChatStream({
+      mastra,
+      agentId: id,
+      params: {
+        messages,
+        memory: {
+          thread: threadId,
+          resource: resourceId,
+        }
       },
     });
 
-    return createUIMessageStreamResponse({
-      stream: toAISdkStream(stream, { from: "agent" }),
-    });
+    return createUIMessageStreamResponse({ stream });
   } catch (error) {
     console.log(error);
     return new Response("Error interno del servidor", { status: 500 });

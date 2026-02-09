@@ -1,7 +1,9 @@
 // Agent libs
-import AgentLib, { type Agent } from "@/lib/agents";
-
+import { toAISdkV5Messages } from "@mastra/ai-sdk/ui";
+import { NextResponse } from "next/server";
 import { mastra } from "@/mastra";
+
+import AgentLib, { type Agent } from "@/lib/agents";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +14,7 @@ export async function POST(req: Request) {
 
     const resourceId = "user-default";
     const isEnabled = AgentLib.IsEnabled(provider);
-    const agentName = AgentLib.GetAgent(provider)?.agentName;
+    const agentName = AgentLib.GetAgent(provider)?.id;
 
     if (!provider || !resourceId || !threadId) {
       return new Response("Faltan parámetros: provider, resourceId, threadId", {
@@ -29,22 +31,20 @@ export async function POST(req: Request) {
       );
     }
 
-    const agent = mastra.getAgent(agentName);
-    const memory = await agent.getMemory();
+    const memory = await mastra.getAgentById(agentName).getMemory();
     if (!memory) {
       return new Response(JSON.stringify({ messages: [] }), {
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    const { messages } = await memory.recall({
+    const response = await memory.recall({
       threadId,
       resourceId,
     });
 
-    return new Response(JSON.stringify({ messages }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    const uiMessages = toAISdkV5Messages(response?.messages || []);
+    return NextResponse.json(uiMessages);
   } catch (error) {
     console.error(error);
     return new Response("Error interno del servidor", { status: 500 });

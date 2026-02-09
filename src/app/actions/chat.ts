@@ -13,20 +13,17 @@ export async function getInitialMessages(
 ): Promise<UIMessage[]> {
   try {
     const resourceId = "user-default";
-    const agentName = AgentLib.GetAgent(providerId)?.agentName;
+    
+    const agentId = AgentLib.GetAgent(providerId)?.id;
+    if (!agentId) return [];
 
-    if (!agentName) return [];
-
-    const agent = mastra.getAgent(agentName);
-    const memory = await agent.getMemory();
-
+    const memory = await mastra.getAgentById(agentId).getMemory();
     if (!memory) return [];
 
     const { messages } = await memory.recall({ threadId, resourceId });
 
     return toAISdkV5Messages(messages);
   } catch (error) {
-    console.log(error);
     return [];
   }
 }
